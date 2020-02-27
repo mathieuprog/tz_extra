@@ -87,12 +87,12 @@ defmodule TzExtra do
 
   def time_zones(opts \\ [])
 
-  def time_zones(with_links: false) do
-    unquote(Macro.escape(time_zones_without_links))
+  def time_zones(with_links: true) do
+    unquote(Macro.escape(time_zones))
   end
 
   def time_zones(_) do
-    unquote(Macro.escape(time_zones))
+    unquote(Macro.escape(time_zones_without_links))
   end
 
   def countries() do
