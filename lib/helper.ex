@@ -13,6 +13,22 @@ defmodule TzExtra.Helper do
     period.utc_offset
   end
 
+  def find_zone_abbr_for_periods([%{to: :max} = period1, %{to: :max} = period2 | _]) do
+    Enum.min_by([period1, period2], & &1.std_offset).zone_abbr
+  end
+
+  def find_zone_abbr_for_periods([period | _]) do
+    period.zone_abbr
+  end
+
+  def find_dst_zone_abbr_for_periods([%{to: :max} = period1, %{to: :max} = period2 | _]) do
+    Enum.max_by([period1, period2], & &1.std_offset).zone_abbr
+  end
+
+  def find_dst_zone_abbr_for_periods([period | _]) do
+    period.zone_abbr
+  end
+
   def offset_to_string(seconds) do
     string =
       abs(seconds)

@@ -48,7 +48,8 @@ defmodule TzExtra.FileParser.ZoneParser do
       %{
         country_code: country_code,
         coordinates: entry.coordinates,
-        name: entry.name
+        name: entry.name,
+        short_name: String.split(entry.name, "/") |> List.last()
       }
     end
   end
