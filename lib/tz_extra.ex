@@ -24,6 +24,7 @@ defmodule TzExtra do
       |> Map.put(:pretty_utc_offset, offset_to_string(utc_offset))
       |> Map.put(:pretty_dst_offset, offset_to_string(dst_offset))
     end)
+    |> Enum.sort_by(&{&1.country.name, &1.utc_offset, &1.name})
 
   def countries() do
     unquote(Macro.escape(countries))

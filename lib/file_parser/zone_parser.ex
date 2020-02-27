@@ -9,7 +9,6 @@ defmodule TzExtra.FileParser.ZoneParser do
     |> Enum.to_list()
     |> parse_strings_into_maps()
     |> add_country_names(countries)
-    |> Enum.sort_by(& &1.country.name)
   end
 
   defp strip_comments(stream) do
