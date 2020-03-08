@@ -62,7 +62,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.2.0"}
+    {:tz_extra, "~> 0.3.0"}
   ]
 end
 ```
