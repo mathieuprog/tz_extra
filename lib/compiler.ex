@@ -18,6 +18,10 @@ defmodule TzExtra.Compiler do
 
     contents = [
       quote do
+        def version() do
+          unquote(Tz.version())
+        end
+
         def time_zones_by_country() do
           unquote(Macro.escape(time_zones))
         end
