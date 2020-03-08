@@ -22,8 +22,12 @@ defmodule TzExtra.Compiler do
           unquote(Tz.version())
         end
 
-        def time_zones_by_country() do
+        def countries_time_zones(with_utc: true) do
           unquote(Macro.escape(time_zones))
+        end
+
+        def countries_time_zones() do
+          unquote(Macro.escape(Enum.filter(time_zones, & &1.time_zone != "UTC")))
         end
 
         def countries() do

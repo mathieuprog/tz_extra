@@ -2,7 +2,7 @@
 
 `tz_extra` provides a few utilities to work with time zones.
 
-### `TzExtra.time_zones_by_country/0`
+### `TzExtra.countries_time_zones/0`
 
 Returns a list of time zone data by country. The data includes:
 * the country and time zone;
@@ -14,7 +14,7 @@ Returns a list of time zone data by country. The data includes:
 #### Example
 
 ```
-iex> TzExtra.time_zones_by_country() |> Enum.at(5)
+iex> TzExtra.countries_time_zones() |> Enum.at(5)
 ```
 
 ```
