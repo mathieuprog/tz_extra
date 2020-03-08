@@ -2,60 +2,42 @@
 
 `tz_extra` provides a few utilities to work with time zones.
 
-### `TzExtra.time_zones/0`
+### `TzExtra.time_zones_by_country/0`
 
-Returns a list of time zones with useful data such as
-* the coordinates of the location
-* the country where the time zone is observed
-* the UTC and DST offsets
+Returns a list of time zone data by country. The data includes:
+* the country and time zone;
+* the current UTC and DST offsets observed;
+* the links (other city names) linking to the time zone;
+* the zone abbreviation;
+* the coordinates.
 
 #### Example
 
 ```
-iex> TzExtra.time_zones() |> Enum.at(200)
+iex> TzExtra.time_zones_by_country() |> Enum.at(5)
 ```
 
 ```
 %{
-  coordinates: "+513030-0000731",
-  country: %{code: "JE", name: "Jersey"},
+  coordinates: "+0627+00324",
+  country: %{code: "AO", name: "Angola"},
   dst_offset: 3600,
-  name: "Europe/London",
+  dst_zone_abbr: "WAT",
+  links: [
+    "Bangui", "Brazzaville", "Douala",
+    "Kinshasa", "Libreville", "Luanda",
+    "Malabo", "Niamey", "Porto-Novo"
+  ],
   pretty_dst_offset: "+01:00",
-  pretty_utc_offset: "+00:00",
-  utc_offset: 0
+  pretty_utc_offset: "+01:00",
+  time_zone: "Africa/Lagos",
+  utc_offset: 3600,
+  zone_abbr: "WAT"
 }
 ```
 
-If a time zone is observed in multiple countries, the time zone data will be repeated for each country. For example,
-Crimea has been a subject of a territorial dispute between Ukraine and Russia:
-
-```
-iex> TzExtra.time_zones() |> Enum.filter(& &1.name == "Europe/Simferopol")
-```
-
-```
-[
-  %{
-    coordinates: "+4457+03406",
-    country: %{code: "RU", name: "Russia"},
-    dst_offset: 10800,
-    name: "Europe/Simferopol",
-    pretty_dst_offset: "+03:00",
-    pretty_utc_offset: "+03:00",
-    utc_offset: 10800
-  },
-  %{
-    coordinates: "+4457+03406",
-    country: %{code: "UA", name: "Ukraine"},
-    dst_offset: 10800,
-    name: "Europe/Simferopol",
-    pretty_dst_offset: "+03:00",
-    pretty_utc_offset: "+03:00",
-    utc_offset: 10800
-  }
-]
-```
+Note that a time zone may be observed by multiple countries. For example, the tz database version `2019c` lists 10
+countries observing the time zone `Africa/Lagos`; this will result in 10 map entries for that time zone.
 
 ### `TzExtra.countries/0`
 

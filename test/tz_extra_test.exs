@@ -7,8 +7,8 @@ defmodule TzExtraTest do
   end
 
   test "time zones" do
-    assert is_list(TzExtra.time_zones())
+    assert is_list(TzExtra.time_zones_by_country())
 
-    assert 2 == TzExtra.time_zones() |> Enum.filter(& &1.name == "Europe/Simferopol") |> Enum.count()
+    assert 2 == TzExtra.time_zones_by_country() |> Enum.filter(& &1.time_zone == "Europe/Simferopol") |> Enum.count()
   end
 end
