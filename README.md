@@ -55,6 +55,31 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
+### Automatic time zone data updates
+
+`tz_extra` can watch for IANA time zone database updates and automatically recompile the time zone data.
+
+To enable automatic updates, add `TzExtra.UpdatePeriodically` as a child in your supervisor:
+
+```
+{TzExtra.UpdatePeriodically, []}
+```
+
+`TzExtra.UpdatePeriodically` also triggers `tz`'s time zone recompilation; so you don't need to add
+`Tz.UpdatePeriodically` if you added `TzExtra.UpdatePeriodically` in your supervisor.
+
+Lastly, add the http client `mint` and ssl certificate store `castore` into your `mix.exs` file:
+
+```
+defp deps do
+  [
+    {:castore, "~> 0.1.5"},
+    {:mint, "~> 1.0"},
+    {:tz_extra, "~> 0.3.0"}
+  ]
+end
+```
+
 ## Installation
 
 Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
