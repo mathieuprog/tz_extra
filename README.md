@@ -39,6 +39,23 @@ iex> TzExtra.countries_time_zones() |> Enum.at(5)
 Note that a time zone may be observed by multiple countries. For example, the tz database version `2019c` lists 10
 countries observing the time zone `Africa/Lagos`; this will result in 10 map entries for that time zone.
 
+You may pass the `:with_utc` option set to `true`, in order to add the UTC time zone to the list; the following map is then added:
+
+```
+%{
+  coordinates: nil,
+  country: nil,
+  dst_offset: 0,
+  dst_zone_abbr: "UTC",
+  links: [],
+  pretty_dst_offset: "+00:00",
+  pretty_utc_offset: "+00:00",
+  time_zone: "UTC",
+  utc_offset: 0,
+  zone_abbr: "UTC"
+}
+```
+
 ### `TzExtra.countries/0`
 
 ```
