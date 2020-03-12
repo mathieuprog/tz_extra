@@ -14,7 +14,7 @@ defmodule TzExtra.Compiler do
       |> add_links()
       |> List.insert_at(0, %{coordinates: nil, country: nil, time_zone: "UTC", links: []})
       |> add_offset_data()
-      |> Enum.sort_by(&{&1.country && &1.country.name, &1.utc_offset, &1.time_zone})
+      |> Enum.sort_by(&{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone})
 
     contents = [
       quote do

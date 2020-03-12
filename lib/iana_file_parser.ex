@@ -1,11 +1,13 @@
 defmodule TzExtra.IanaFileParser do
   @moduledoc false
 
+  import TzExtra.Helper
+
   def countries() do
     Path.join([:code.priv_dir(:tz), "tzdata#{Tz.version()}", "iso3166.tab"])
     |> file_to_list()
     |> parse_countries()
-    |> Enum.sort_by(& &1.name)
+    |> Enum.sort_by(&normalize_string(&1.name))
   end
 
   def time_zones_with_country(countries) do
