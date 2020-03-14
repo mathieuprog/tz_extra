@@ -11,8 +11,8 @@ defmodule TzExtra.Compiler do
 
     time_zones =
       IanaFileParser.time_zones_with_country(countries)
-      |> add_links()
-      |> List.insert_at(0, %{coordinates: nil, country: nil, time_zone: "UTC", links: []})
+      |> add_time_zone_links()
+      |> List.insert_at(0, %{coordinates: nil, country: nil, time_zone: "UTC", time_zone_links: []})
       |> add_offset_data()
       |> Enum.sort_by(&{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone})
 
@@ -63,7 +63,7 @@ defmodule TzExtra.Compiler do
     end)
   end
 
-  defp add_links(time_zones) do
+  defp add_time_zone_links(time_zones) do
     link_time_zones = IanaFileParser.link_time_zones()
 
     Enum.map(time_zones, fn time_zone ->
@@ -73,9 +73,9 @@ defmodule TzExtra.Compiler do
              & &1.canonical_zone_name == time_zone.time_zone
              && !String.contains?(&1.link_zone_name, "GMT")
              && String.contains?(&1.link_zone_name, "/"))
-        |> Enum.map(&List.last(String.split(&1.link_zone_name, "/")))
+        |> Enum.map(& &1.link_zone_name)
 
-      Map.put(time_zone, :links, links)
+      Map.put(time_zone, :time_zone_links, links)
     end)
   end
 end

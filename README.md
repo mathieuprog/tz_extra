@@ -23,14 +23,14 @@ iex> TzExtra.countries_time_zones() |> Enum.at(5)
   country: %{code: "AO", name: "Angola"},
   dst_offset: 3600,
   dst_zone_abbr: "WAT",
-  links: [
-    "Bangui", "Brazzaville", "Douala",
-    "Kinshasa", "Libreville", "Luanda",
-    "Malabo", "Niamey", "Porto-Novo"
-  ],
   pretty_dst_offset: "+01:00",
   pretty_utc_offset: "+01:00",
   time_zone: "Africa/Lagos",
+  time_zone_links: [
+    "Africa/Bangui", "Africa/Brazzaville", "Africa/Douala",
+    "Africa/Kinshasa", "Africa/Libreville", "Africa/Luanda",
+    "Africa/Malabo", "Africa/Niamey", "Africa/Porto-Novo"
+  ],
   utc_offset: 3600,
   zone_abbr: "WAT"
 }
@@ -47,10 +47,10 @@ You may pass the `:with_utc` option set to `true`, in order to add the UTC time 
   country: nil,
   dst_offset: 0,
   dst_zone_abbr: "UTC",
-  links: [],
   pretty_dst_offset: "+00:00",
   pretty_utc_offset: "+00:00",
   time_zone: "UTC",
+  time_zone_links: [],
   utc_offset: 0,
   zone_abbr: "UTC"
 }
