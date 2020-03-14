@@ -12,9 +12,9 @@ defmodule TzExtra.JsonDumper do
     File.write!(file_path, json, [:write])
   end
 
-  def dump_countries_time_zones(filename \\ "countries_time_zones.json") do
+  def dump_countries_time_zones(options \\ [], filename \\ "countries_time_zones.json") do
     json =
-      TzExtra.countries_time_zones()
+      TzExtra.countries_time_zones(options)
       |> Enum.map(&camelize_map_keys(&1))
       |> Jason.encode!()
 
