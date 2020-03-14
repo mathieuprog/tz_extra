@@ -97,6 +97,18 @@ defp deps do
 end
 ```
 
+### Dump JSON data for JavaScript
+
+Dump time zone data into JSON files for JavaScript clients. The JSON files are written into `tz_extra`'s `priv` folder.
+
+```
+iex> TzExtra.JsonDumper.dump_countries_time_zones()
+```
+
+```
+iex> TzExtra.JsonDumper.dump_countries()
+```
+
 ## Installation
 
 Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
