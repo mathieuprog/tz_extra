@@ -30,7 +30,7 @@ defmodule TzExtra.MixProject do
 
   defp deps do
     [
-      {:tz, "~> 0.8.0"},
+      {:tz, "~> 0.15"},
       {:ex_doc, "~> 0.21", only: :dev},
       {:jason, "~> 1.1", only: :dev}
     ]

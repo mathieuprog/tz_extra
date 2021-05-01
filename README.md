@@ -2,7 +2,7 @@
 
 `tz_extra` provides a few utilities to work with time zones.
 
-### `TzExtra.countries_time_zones/0`
+### `TzExtra.countries_time_zones/1`
 
 Returns a list of time zone data by country. The data includes:
 * the country and time zone;
@@ -55,6 +55,30 @@ You may pass the `:with_utc` option set to `true`, in order to add the UTC time 
   zone_abbr: "UTC"
 }
 ```
+
+### `TzExtra.time_zone_identifiers/1`
+
+```
+iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
+```
+
+```
+[
+  "Africa/Abidjan",
+  "Africa/Accra",
+  "Africa/Algiers",
+  "Africa/Bissau",
+  "Africa/Cairo"
+]
+```
+
+This function takes two options:
+
+* `:exclude_non_civil` (by default `true`)  
+  By default, only time zones attached to countries are returned. Set this option to `false` to include time zones that aren't not tied to a particular country.
+
+* `:exclude_alias` (by default `true`)  
+  By default, only canonical time zones are returned. Set this option to `false` to include time zone aliases (also called links).
 
 ### `TzExtra.countries/0`
 

@@ -21,13 +21,14 @@ defmodule TzExtra.IanaFileParser do
     end)
   end
 
-  def link_time_zones() do
-    for filename <- ~w(africa antarctica asia australasia backward etcetera europe northamerica southamerica)s do
+  def time_zones() do
+    for filename <- ~w(africa antarctica asia australasia etcetera europe northamerica southamerica)s do
       Path.join([:code.priv_dir(:tz), "tzdata#{Tz.version()}", filename])
       |> file_to_list()
-      |> parse_link_time_zones()
+      |> parse_time_zones()
     end
     |> List.flatten()
+    |> merge_canonical_link_time_zones()
   end
 
   defp file_to_list(file_path) do
@@ -66,22 +67,48 @@ defmodule TzExtra.IanaFileParser do
     [map | parse_countries(tail)]
   end
 
-  defp parse_link_time_zones([]), do: []
+  defp merge_canonical_link_time_zones(time_zones) do
+    Enum.reduce(time_zones, %{}, fn
+      %{canonical_zone_name: canonical_zone_name, link_zone_name: link_zone_name}, map ->
+        link_zone_names = Map.get(map, canonical_zone_name, [])
+        Map.put(map, canonical_zone_name, [link_zone_name | link_zone_names])
 
-  defp parse_link_time_zones([string | tail]) do
-    if String.starts_with?(string, "Link") do
-      link =
-        Enum.zip([
-          [:canonical_zone_name, :link_zone_name],
-          tl(String.split(string, ~r{\s}, trim: true, parts: 3))
-          |> Enum.map(& String.trim(&1))
-        ])
-        |> Enum.into(%{})
+      %{canonical_zone_name: canonical_zone_name}, map ->
+        Map.put_new(map, canonical_zone_name, [])
+    end)
+  end
 
-      [link | parse_link_time_zones(tail)]
-    else
-      parse_link_time_zones(tail)
+  defp parse_time_zones([]), do: []
+
+  defp parse_time_zones([string | tail]) do
+    cond do
+      String.starts_with?(string, "Link") ->
+        [parse_link_string_into_map(string) | parse_time_zones(tail)]
+
+      String.starts_with?(string, "Zone") ->
+        [parse_zone_string_into_map(string) | parse_time_zones(tail)]
+
+      true ->
+        parse_time_zones(tail)
     end
+  end
+
+  defp parse_link_string_into_map(link_string) do
+    Enum.zip([
+      [:canonical_zone_name, :link_zone_name],
+      tl(String.split(link_string, ~r{\s}, trim: true, parts: 3))
+      |> Enum.map(& String.trim(&1))
+    ])
+    |> Enum.into(%{})
+  end
+
+  defp parse_zone_string_into_map(zone_string) do
+    Enum.zip([
+      [:canonical_zone_name],
+      tl(String.split(zone_string, ~r{\s}, trim: true, parts: 6))
+      |> Enum.map(& String.trim(&1))
+    ])
+    |> Enum.into(%{})
   end
 
   defp parse_time_zones_with_country([]), do: []
