@@ -13,11 +13,11 @@ Returns a list of time zone data by country. The data includes:
 
 #### Example
 
-```
+```elixir
 iex> TzExtra.countries_time_zones() |> Enum.at(5)
 ```
 
-```
+```elixir
 %{
   coordinates: "+0627+00324",
   country: %{code: "AO", name: "Angola"},
@@ -41,7 +41,7 @@ countries observing the time zone `Africa/Lagos`; this will result in 10 map ent
 
 You may pass the `:with_utc` option set to `true`, in order to add the UTC time zone to the list; the following map is then added:
 
-```
+```elixir
 %{
   coordinates: nil,
   country: nil,
@@ -58,11 +58,11 @@ You may pass the `:with_utc` option set to `true`, in order to add the UTC time 
 
 ### `TzExtra.time_zone_identifiers/1`
 
-```
+```elixir
 iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
 ```
 
-```
+```elixir
 [
   "Africa/Abidjan",
   "Africa/Accra",
@@ -82,11 +82,11 @@ This function takes two options:
 
 ### `TzExtra.countries/0`
 
-```
+```elixir
 iex> TzExtra.countries() |> Enum.take(5)
 ```
 
-```
+```elixir
 [
   %{code: "AF", name: "Afghanistan"},
   %{code: "AL", name: "Albania"},
@@ -96,13 +96,35 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
+### `TzExtra.validate_time_zone/3`
+
+```elixir
+import TzExtra.Changeset
+
+changeset
+|> validate_time_zone(:time_zone)
+```
+
+You may pass the options `:exclude_non_civil` and `:exclude_alias` described above, as well as the `:message` option to customize the error message.
+
+### `TzExtra.validate_time_zone/3`
+
+```elixir
+import TzExtra.Changeset
+
+changeset
+|> validate_iso_country_code(:country_code)
+```
+
+You may pass the `:message` option to customize the error message.
+
 ### Automatic time zone data updates
 
 `tz_extra` can watch for IANA time zone database updates and automatically recompile the time zone data.
 
 To enable automatic updates, add `TzExtra.UpdatePeriodically` as a child in your supervisor:
 
-```
+```elixir
 {TzExtra.UpdatePeriodically, []}
 ```
 
@@ -111,7 +133,7 @@ To enable automatic updates, add `TzExtra.UpdatePeriodically` as a child in your
 
 Lastly, add the http client `mint` and ssl certificate store `castore` into your `mix.exs` file:
 
-```
+```elixir
 defp deps do
   [
     {:castore, "~> 0.1.10"},
@@ -125,11 +147,11 @@ end
 
 Dump time zone data into JSON files for JavaScript clients. The JSON files are written into `tz_extra`'s `priv` folder.
 
-```
+```elixir
 iex> TzExtra.JsonDumper.dump_countries_time_zones()
 ```
 
-```
+```elixir
 iex> TzExtra.JsonDumper.dump_countries()
 ```
 
