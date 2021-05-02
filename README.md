@@ -163,7 +163,7 @@ defp deps do
   [
     {:castore, "~> 0.1.10"},
     {:mint, "~> 1.2"},
-    {:tz_extra, "~> 0.16.0"}
+    {:tz_extra, "~> 0.16.1"}
   ]
 end
 ```
@@ -187,7 +187,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.16.0"}
+    {:tz_extra, "~> 0.16.1"}
   ]
 end
 ```
