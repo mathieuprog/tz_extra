@@ -37,7 +37,7 @@ defmodule TzExtra.ChangesetTest do
 
     refute changeset.valid?
     assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
-    assert changeset.errors == [time_zone: {"is not a valid time zone identifier", [validation: :time_zone_identifier]}]
+    assert changeset.errors == [time_zone: {"is not a valid time zone", [validation: :time_zone_identifier]}]
   end
 
   test "invalid time zone with custom message" do
@@ -85,7 +85,7 @@ defmodule TzExtra.ChangesetTest do
 
     refute changeset.valid?
     assert validations(changeset) == [time_zone: {:civil_time_zone_identifier, []}]
-    assert changeset.errors == [time_zone: {"is not a valid civil time zone identifier", [validation: :civil_time_zone_identifier]}]
+    assert changeset.errors == [time_zone: {"is not a valid time zone", [validation: :civil_time_zone_identifier]}]
   end
 
   test "valid iso country code" do
@@ -108,6 +108,6 @@ defmodule TzExtra.ChangesetTest do
 
     refute changeset.valid?
     assert validations(changeset) == [country_code: {:country_code, []}]
-    assert changeset.errors == [country_code: {"is not a valid ISO country code", [validation: :country_code]}]
+    assert changeset.errors == [country_code: {"is not a valid country code", [validation: :country_code]}]
   end
 end

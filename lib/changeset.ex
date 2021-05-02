@@ -10,7 +10,7 @@ if Code.ensure_loaded?(Ecto.Changeset) do
       Ecto.Changeset.validate_change changeset, field, {:time_zone_identifier, []}, fn _field, value ->
         if Enum.member?(TzExtra.time_zone_identifiers(opts), value),
           do: [],
-          else: [{field, {message(opts, "is not a valid time zone identifier"), [validation: :time_zone_identifier]}}]
+          else: [{field, {message(opts, "is not a valid time zone"), [validation: :time_zone_identifier]}}]
       end
     end
 
@@ -23,7 +23,7 @@ if Code.ensure_loaded?(Ecto.Changeset) do
       Ecto.Changeset.validate_change changeset, field, {:civil_time_zone_identifier, []}, fn _field, value ->
         if Enum.member?(TzExtra.civil_time_zone_identifiers(opts), value),
           do: [],
-          else: [{field, {message(opts, "is not a valid civil time zone identifier"), [validation: :civil_time_zone_identifier]}}]
+          else: [{field, {message(opts, "is not a valid time zone"), [validation: :civil_time_zone_identifier]}}]
       end
     end
 
@@ -31,7 +31,7 @@ if Code.ensure_loaded?(Ecto.Changeset) do
       Ecto.Changeset.validate_change changeset, field, {:country_code, []}, fn _field, value ->
         if Enum.any?(TzExtra.countries(), fn %{code: country_code} -> country_code == value end),
           do: [],
-          else: [{field, {message(opts, "is not a valid ISO country code"), [validation: :country_code]}}]
+          else: [{field, {message(opts, "is not a valid country code"), [validation: :country_code]}}]
       end
     end
 
