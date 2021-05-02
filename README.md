@@ -6,8 +6,8 @@
 * [`TzExtra.time_zone_identifiers/1`](#tzextratime_zone_identifiers1): returns a list of time zone identifiers
 * [`TzExtra.civil_time_zone_identifiers/1`](#tzextracivil_time_zone_identifiers1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
-* [`TzExtra.Changeset.validate_time_zone/3`](#tzextraChangesetvalidate_time_zone3): an Ecto Changeset validator, validating that the user input is a valid time zone
-* [`TzExtra.Changeset.validate_civil_time_zone/3`](#tzextraChangesetvalidate_civil_time_zone3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
+* [`TzExtra.Changeset.validate_time_zone_identifier/3`](#tzextraChangesetvalidate_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid time zone
+* [`TzExtra.Changeset.validate_civil_time_zone_identifier/3`](#tzextraChangesetvalidate_civil_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
 
 ### `TzExtra.countries_time_zones/1`
@@ -110,7 +110,7 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
-### `TzExtra.Changeset.validate_time_zone/3`
+### `TzExtra.Changeset.validate_time_zone_identifier/3`
 
 ```elixir
 import TzExtra.Changeset
@@ -121,7 +121,7 @@ changeset
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
 
-### `TzExtra.Changeset.validate_civil_time_zone/3`
+### `TzExtra.Changeset.validate_civil_time_zone_identifier/3`
 
 ```elixir
 import TzExtra.Changeset
