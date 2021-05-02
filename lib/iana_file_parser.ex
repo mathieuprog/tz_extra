@@ -4,14 +4,14 @@ defmodule TzExtra.IanaFileParser do
   import TzExtra.Helper
 
   def countries() do
-    Path.join([:code.priv_dir(:tz), "tzdata#{Tz.version()}", "iso3166.tab"])
+    Path.join([:code.priv_dir(:tz), "tzdata#{Tz.database_version()}", "iso3166.tab"])
     |> file_to_list()
     |> parse_countries()
     |> Enum.sort_by(&normalize_string(&1.name))
   end
 
   def time_zones_with_country(countries) do
-    Path.join([:code.priv_dir(:tz), "tzdata#{Tz.version()}", "zone1970.tab"])
+    Path.join([:code.priv_dir(:tz), "tzdata#{Tz.database_version()}", "zone1970.tab"])
     |> file_to_list()
     |> parse_time_zones_with_country()
     |> Enum.map(fn map ->
@@ -23,7 +23,7 @@ defmodule TzExtra.IanaFileParser do
 
   def time_zones() do
     for filename <- ~w(africa antarctica asia australasia etcetera europe northamerica southamerica)s do
-      Path.join([:code.priv_dir(:tz), "tzdata#{Tz.version()}", filename])
+      Path.join([:code.priv_dir(:tz), "tzdata#{Tz.database_version()}", filename])
       |> file_to_list()
       |> parse_time_zones()
     end

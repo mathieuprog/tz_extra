@@ -8,5 +8,5 @@
   "makeup_elixir": {:hex, :makeup_elixir, "0.14.0", "cf8b7c66ad1cff4c14679698d532f0b5d45a3968ffbcbfd590339cb57742f1ae", [:mix], [{:makeup, "~> 1.0", [hex: :makeup, repo: "hexpm", optional: false]}], "hexpm", "d4b316c7222a85bbaa2fd7c6e90e37e953257ad196dc229505137c5e505e9eff"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.3", "def21c10a9ed70ce22754fdeea0810dafd53c2db3219a0cd54cf5526377af1c6", [:mix], [], "hexpm", "589b5af56f4afca65217a1f3eb3fee7e79b09c40c742fddc1c312b3ac0b3399f"},
   "telemetry": {:hex, :telemetry, "0.4.3", "a06428a514bdbc63293cd9a6263aad00ddeb66f608163bdec7c8995784080818", [:rebar3], [], "hexpm", "eb72b8365ffda5bed68a620d1da88525e326cb82a75ee61354fc24b844768041"},
-  "tz": {:hex, :tz, "0.15.0", "0c200cb5b9301eb69c9e3c04c39986dab93eb4111aa7d1d43e4e1aed8cbb424d", [:mix], [{:castore, "~> 0.1.10", [hex: :castore, repo: "hexpm", optional: true]}, {:mint, "~> 1.2", [hex: :mint, repo: "hexpm", optional: true]}], "hexpm", "294ffc83d52d0dc430d26f72e1b5b535730590dbd76f9b001d0770e4ddd173a7"},
+  "tz": {:hex, :tz, "0.16.0", "cf137b8dd47b64a13c042c5bd8fd172787a6d0cf352267f43e68ae245806ca5d", [:mix], [{:castore, "~> 0.1.10", [hex: :castore, repo: "hexpm", optional: true]}, {:mint, "~> 1.2", [hex: :mint, repo: "hexpm", optional: true]}], "hexpm", "25c6445d9dda5e49750c12ad5980a01833884814e3c46e030ccf1b3c742a0f9b"},
 }

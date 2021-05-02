@@ -21,7 +21,7 @@ if Code.ensure_loaded?(Mint.HTTP) do
 
       Updater.maybe_recompile()
 
-      if Tz.version() != TzExtra.version() do
+      if Tz.database_version() != TzExtra.database_version() do
         Logger.info("TzExtra is recompiling time zone data...")
         Code.compiler_options(ignore_module_conflict: true)
         Compiler.compile()

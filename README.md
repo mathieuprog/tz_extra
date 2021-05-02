@@ -39,7 +39,7 @@ iex> TzExtra.countries_time_zones() |> Enum.at(5)
 Note that a time zone may be observed by multiple countries. For example, the tz database version `2019c` lists 10
 countries observing the time zone `Africa/Lagos`; this will result in 10 map entries for that time zone.
 
-You may pass the `:with_utc` option set to `true`, in order to add the UTC time zone to the list; the following map is then added:
+You may pass the `:prepend_utc` option set to `true`, in order to add the UTC time zone to the list; the following map is then added:
 
 ```elixir
 %{
@@ -64,21 +64,27 @@ iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
 
 ```elixir
 [
-  "Africa/Abidjan",
-  "Africa/Accra",
-  "Africa/Algiers",
+  "Africa/Abidjan", 
+  "Africa/Accra", 
+  "Africa/Algiers", 
   "Africa/Bissau",
   "Africa/Cairo"
 ]
 ```
 
-This function takes two options:
+This function can take an option `:include_alias` (by default set to `false`). By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases (also called links).
 
-* `:exclude_non_civil` (by default `true`)  
-  By default, only time zones attached to countries are returned. Set this option to `false` to include time zones that aren't not tied to a particular country.
+### `TzExtra.civil_time_zone_identifiers/1`
 
-* `:exclude_alias` (by default `true`)  
+```elixir
+iex> TzExtra.civil_time_zone_identifiers() |> Enum.take(5)
+```
+
+This function returns only the time zone identifiers attached to a country. It takes two options:
+* `:include_alias` (by default set to `false`)
   By default, only canonical time zones are returned. Set this option to `false` to include time zone aliases (also called links).
+* `:prepend_utc` (by default set to `false`)
+  Add the UTC time zone as the first element of the time zone list.
 
 ### `TzExtra.countries/0`
 

@@ -21,7 +21,7 @@ defmodule TzExtra.ChangesetTest do
     types = %{time_zone: :string}
     changeset =
       cast({data, types}, %{time_zone: "America/Guadeloupe"}, [:time_zone])
-      |> validate_time_zone(:time_zone, exclude_alias: false)
+      |> validate_time_zone(:time_zone, include_alias: true)
 
     assert changeset.valid?
     assert validations(changeset) == [time_zone: {:time_zone, []}]
