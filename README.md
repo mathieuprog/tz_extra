@@ -2,13 +2,13 @@
 
 `tz_extra` provides a few utilities to work with time zones:
 
-* [`TzExtra.countries_time_zones/1`](#TzExtra.countries_time_zones/1): returns a list of time zone data by country
-* [`TzExtra.time_zone_identifiers/1`](#TzExtra.time_zone_identifiers/1): returns a list of time zone identifiers
-* [`TzExtra.civil_time_zone_identifiers/1`](#TzExtra.civil_time_zone_identifiers/1): returns a list of time zone identifiers that are tied to a country
-* [`TzExtra.countries/0`](#TzExtra.countries/0): returns a list of ISO country codes with their English name
-* [`TzExtra.Changeset.validate_time_zone/3`](#TzExtra.Changeset.validate_time_zone/3): an Ecto Changeset validator, validating that the user input is a valid time zone
-* [`TzExtra.Changeset.validate_civil_time_zone/3`](#TzExtra.Changeset.validate_civil_time_zone/3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
-* [`TzExtra.Changeset.validate_iso_country_code/3`](#TzExtra.Changeset.validate_iso_country_code/3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
+* [`TzExtra.countries_time_zones/1`](#TzExtra.countries_time_zones1): returns a list of time zone data by country
+* [`TzExtra.time_zone_identifiers/1`](#TzExtra.time_zone_identifiers1): returns a list of time zone identifiers
+* [`TzExtra.civil_time_zone_identifiers/1`](#TzExtra.civil_time_zone_identifiers1): returns a list of time zone identifiers that are tied to a country
+* [`TzExtra.countries/0`](#TzExtra.countries0): returns a list of ISO country codes with their English name
+* [`TzExtra.Changeset.validate_time_zone/3`](#TzExtra.Changeset.validate_time_zone3): an Ecto Changeset validator, validating that the user input is a valid time zone
+* [`TzExtra.Changeset.validate_civil_time_zone/3`](#TzExtra.Changeset.validate_civil_time_zone3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
+* [`TzExtra.Changeset.validate_iso_country_code/3`](#TzExtra.Changeset.validate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
 
 ## TzExtra.countries_time_zones/1
 
