@@ -77,7 +77,7 @@ This function can take an option `:include_alias` (by default set to `false`). B
 ### `TzExtra.civil_time_zone_identifiers/1`
 
 ```elixir
-iex> TzExtra.civil_time_zone_identifiers() |> Enum.take(5)
+iex> TzExtra.civil_time_zone_identifiers()
 ```
 
 This function returns only the time zone identifiers attached to a country. It takes two options:
