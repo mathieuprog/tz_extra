@@ -3,6 +3,10 @@ if Code.ensure_loaded?(Ecto.Changeset) do
     require TzExtra.Compiler
 
     def validate_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ []) when is_atom(field) do
+      opts =
+        opts
+        |> Keyword.put(:include_alias, Keyword.get(opts, :allow_alias, false))
+
       Ecto.Changeset.validate_change changeset, field, {:time_zone_identifier, []}, fn _field, value ->
         if Enum.member?(TzExtra.time_zone_identifiers(opts), value),
           do: [],
@@ -11,6 +15,11 @@ if Code.ensure_loaded?(Ecto.Changeset) do
     end
 
     def validate_civil_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ []) when is_atom(field) do
+      opts =
+        opts
+        |> Keyword.put(:include_alias, Keyword.get(opts, :allow_alias, false))
+        |> Keyword.put(:prepend_utc, Keyword.get(opts, :allow_utc, false))
+
       Ecto.Changeset.validate_change changeset, field, {:civil_time_zone_identifier, []}, fn _field, value ->
         if Enum.member?(TzExtra.civil_time_zone_identifiers(opts), value),
           do: [],

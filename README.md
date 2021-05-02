@@ -119,7 +119,7 @@ changeset
 |> validate_time_zone(:time_zone)
 ```
 
-You may pass the option `:include_alias` as described above, as well as the `:message` option to customize the error message.
+You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
 
 ### `TzExtra.Changeset.validate_civil_time_zone/3`
 
@@ -130,7 +130,7 @@ changeset
 |> validate_civil_time_zone(:time_zone)
 ```
 
-You may pass the options `:include_alias` and `:prepend_utc` as described above, as well as the `:message` option to customize the error message.
+You may pass the options `:allow_alias` and `:allow_utc` to allow time zone aliases and the UTC time zone, as well as the `:message` option to customize the error message.
 
 ### `TzExtra.Changeset.validate_iso_country_code/3`
 

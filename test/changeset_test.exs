@@ -21,7 +21,7 @@ defmodule TzExtra.ChangesetTest do
     types = %{time_zone: :string}
     changeset =
       cast({data, types}, %{time_zone: "America/Guadeloupe"}, [:time_zone])
-      |> validate_time_zone_identifier(:time_zone, include_alias: true)
+      |> validate_time_zone_identifier(:time_zone, allow_alias: true)
 
     assert changeset.valid?
     assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
@@ -58,6 +58,18 @@ defmodule TzExtra.ChangesetTest do
     changeset =
       cast({data, types}, %{time_zone: "Europe/London"}, [:time_zone])
       |> validate_civil_time_zone_identifier(:time_zone)
+
+    assert changeset.valid?
+    assert validations(changeset) == [time_zone: {:civil_time_zone_identifier, []}]
+    assert changeset.errors == []
+  end
+
+  test "civil time zone with :allow_utc option" do
+    data = %{time_zone: ""}
+    types = %{time_zone: :string}
+    changeset =
+      cast({data, types}, %{time_zone: "Etc/UTC"}, [:time_zone])
+      |> validate_civil_time_zone_identifier(:time_zone, allow_utc: true)
 
     assert changeset.valid?
     assert validations(changeset) == [time_zone: {:civil_time_zone_identifier, []}]
