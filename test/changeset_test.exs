@@ -8,11 +8,11 @@ defmodule TzExtra.ChangesetTest do
     data = %{time_zone: ""}
     types = %{time_zone: :string}
     changeset =
-      cast({data, types}, %{time_zone: "Europe/London"}, [:time_zone])
-      |> validate_time_zone(:time_zone)
+      cast({data, types}, %{time_zone: "Etc/UTC"}, [:time_zone])
+      |> validate_time_zone_identifier(:time_zone)
 
     assert changeset.valid?
-    assert validations(changeset) == [time_zone: {:time_zone, []}]
+    assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
     assert changeset.errors == []
   end
 
@@ -21,10 +21,10 @@ defmodule TzExtra.ChangesetTest do
     types = %{time_zone: :string}
     changeset =
       cast({data, types}, %{time_zone: "America/Guadeloupe"}, [:time_zone])
-      |> validate_time_zone(:time_zone, include_alias: true)
+      |> validate_time_zone_identifier(:time_zone, include_alias: true)
 
     assert changeset.valid?
-    assert validations(changeset) == [time_zone: {:time_zone, []}]
+    assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
     assert changeset.errors == []
   end
 
@@ -33,11 +33,11 @@ defmodule TzExtra.ChangesetTest do
     types = %{time_zone: :string}
     changeset =
       cast({data, types}, %{time_zone: "America/Guadeloupe"}, [:time_zone])
-      |> validate_time_zone(:time_zone)
+      |> validate_time_zone_identifier(:time_zone)
 
     refute changeset.valid?
-    assert validations(changeset) == [time_zone: {:time_zone, []}]
-    assert changeset.errors == [time_zone: {"is not a valid time zone identifier", [validation: :time_zone]}]
+    assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
+    assert changeset.errors == [time_zone: {"is not a valid time zone identifier", [validation: :time_zone_identifier]}]
   end
 
   test "invalid time zone with custom message" do
@@ -45,11 +45,35 @@ defmodule TzExtra.ChangesetTest do
     types = %{time_zone: :string}
     changeset =
       cast({data, types}, %{time_zone: "Europe/Foo"}, [:time_zone])
-      |> validate_time_zone(:time_zone, message: "foo")
+      |> validate_time_zone_identifier(:time_zone, message: "foo")
 
     refute changeset.valid?
-    assert validations(changeset) == [time_zone: {:time_zone, []}]
-    assert changeset.errors == [time_zone: {"foo", [validation: :time_zone]}]
+    assert validations(changeset) == [time_zone: {:time_zone_identifier, []}]
+    assert changeset.errors == [time_zone: {"foo", [validation: :time_zone_identifier]}]
+  end
+
+  test "valid civil time zone" do
+    data = %{time_zone: ""}
+    types = %{time_zone: :string}
+    changeset =
+      cast({data, types}, %{time_zone: "Europe/London"}, [:time_zone])
+      |> validate_civil_time_zone_identifier(:time_zone)
+
+    assert changeset.valid?
+    assert validations(changeset) == [time_zone: {:civil_time_zone_identifier, []}]
+    assert changeset.errors == []
+  end
+
+  test "invalid civil time zone" do
+    data = %{time_zone: ""}
+    types = %{time_zone: :string}
+    changeset =
+      cast({data, types}, %{time_zone: "Etc/UTC"}, [:time_zone])
+      |> validate_civil_time_zone_identifier(:time_zone)
+
+    refute changeset.valid?
+    assert validations(changeset) == [time_zone: {:civil_time_zone_identifier, []}]
+    assert changeset.errors == [time_zone: {"is not a valid civil time zone identifier", [validation: :civil_time_zone_identifier]}]
   end
 
   test "valid iso country code" do

@@ -1,6 +1,14 @@
 # TzExtra
 
-`tz_extra` provides a few utilities to work with time zones.
+`tz_extra` provides a few utilities to work with time zones:
+
+* [`TzExtra.countries_time_zones/1`](#`TzExtra.countries_time_zones/1`): returns a list of time zone data by country
+* [`TzExtra.time_zone_identifiers/1`](#`TzExtra.time_zone_identifiers/1`): returns a list of time zone identifiers
+* [`TzExtra.civil_time_zone_identifiers/1`](#`TzExtra.civil_time_zone_identifiers/1`): returns a list of time zone identifiers that are tied to a country
+* [`TzExtra.countries/0`](#`TzExtra.countries/0`): returns a list of ISO country codes with their English name
+* [`TzExtra.Changeset.validate_time_zone/3`](#`TzExtra.Changeset.validate_time_zone/3`): an Ecto Changeset validator, validating that the user input is a valid time zone
+* [`TzExtra.Changeset.validate_civil_time_zone/3`](#`TzExtra.Changeset.validate_civil_time_zone/3`): an Ecto Changeset validator, validating that the user input is a valid civil time zone
+* [`TzExtra.Changeset.validate_iso_country_code/3`](#`TzExtra.Changeset.validate_iso_country_code/3`): an Ecto Changeset validator, validating that the user input is a valid ISO country code
 
 ### `TzExtra.countries_time_zones/1`
 
@@ -102,7 +110,7 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
-### `TzExtra.validate_time_zone/3`
+### `TzExtra.Changeset.validate_time_zone/3`
 
 ```elixir
 import TzExtra.Changeset
@@ -111,9 +119,20 @@ changeset
 |> validate_time_zone(:time_zone)
 ```
 
-You may pass the options `:exclude_non_civil` and `:exclude_alias` described above, as well as the `:message` option to customize the error message.
+You may pass the option `:include_alias` as described above, as well as the `:message` option to customize the error message.
 
-### `TzExtra.validate_time_zone/3`
+### `TzExtra.Changeset.validate_civil_time_zone/3`
+
+```elixir
+import TzExtra.Changeset
+
+changeset
+|> validate_civil_time_zone(:time_zone)
+```
+
+You may pass the options `:include_alias` and `:prepend_utc` as described above, as well as the `:message` option to customize the error message.
+
+### `TzExtra.Changeset.validate_iso_country_code/3`
 
 ```elixir
 import TzExtra.Changeset

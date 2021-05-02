@@ -2,11 +2,19 @@ if Code.ensure_loaded?(Ecto.Changeset) do
   defmodule TzExtra.Changeset do
     require TzExtra.Compiler
 
-    def validate_time_zone(%Ecto.Changeset{} = changeset, field, opts \\ []) when is_atom(field) do
-      Ecto.Changeset.validate_change changeset, field, {:time_zone, []}, fn _field, value ->
+    def validate_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ []) when is_atom(field) do
+      Ecto.Changeset.validate_change changeset, field, {:time_zone_identifier, []}, fn _field, value ->
         if Enum.member?(TzExtra.time_zone_identifiers(opts), value),
           do: [],
-          else: [{field, {message(opts, "is not a valid time zone identifier"), [validation: :time_zone]}}]
+          else: [{field, {message(opts, "is not a valid time zone identifier"), [validation: :time_zone_identifier]}}]
+      end
+    end
+
+    def validate_civil_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ []) when is_atom(field) do
+      Ecto.Changeset.validate_change changeset, field, {:civil_time_zone_identifier, []}, fn _field, value ->
+        if Enum.member?(TzExtra.civil_time_zone_identifiers(opts), value),
+          do: [],
+          else: [{field, {message(opts, "is not a valid civil time zone identifier"), [validation: :civil_time_zone_identifier]}}]
       end
     end
 
