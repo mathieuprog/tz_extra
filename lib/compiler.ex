@@ -68,7 +68,7 @@ defmodule TzExtra.Compiler do
 
         def get_canonical_time_zone_identifier(time_zone_identifier) do
           unquote(Macro.escape(alias_canonical_map))[time_zone_identifier] ||
-            raise "time zone identifier #{time_zone_identifier} not found"
+            raise "time zone identifier \"#{time_zone_identifier}\" not found"
         end
 
         def civil_time_zone_identifiers(opts \\ []) do
