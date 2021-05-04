@@ -34,5 +34,6 @@ defmodule TzExtraTest do
 
   test "get_canonical_time_zone_identifier/1" do
     assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
+    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
   end
 end
