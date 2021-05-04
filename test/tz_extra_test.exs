@@ -31,4 +31,8 @@ defmodule TzExtraTest do
     refute TzExtra.time_zone_identifiers(include_alias: false) |> Enum.any?(& &1 == "America/Guadeloupe")
     refute TzExtra.time_zone_identifiers() |> Enum.any?(& &1 == "America/Guadeloupe")
   end
+
+  test "get_canonical_time_zone_identifier/1" do
+    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
+  end
 end

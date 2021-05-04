@@ -36,6 +36,7 @@ defmodule TzExtra.Compiler do
       |> List.flatten()
       |> Enum.uniq()
       |> Enum.sort()
+      |> Enum.sort()
 
     civil_time_zones =
       countries_time_zones
@@ -50,10 +51,24 @@ defmodule TzExtra.Compiler do
       |> Enum.uniq()
       |> Enum.sort()
 
+    alias_canonical_map =
+      time_zones
+      |> Enum.reduce(%{}, fn {canonical, links}, map ->
+        Enum.reduce(links, map, fn link, map ->
+          Map.put(map, link, canonical)
+        end)
+        |> Map.put(canonical, canonical)
+      end)
+
     contents = [
       quote do
         def database_version() do
           unquote(Tz.database_version())
+        end
+
+        def get_canonical_time_zone_identifier(time_zone_identifier) do
+          unquote(Macro.escape(alias_canonical_map))[time_zone_identifier] ||
+            raise "time zone identifier #{time_zone_identifier} not found"
         end
 
         def civil_time_zone_identifiers(opts \\ []) do

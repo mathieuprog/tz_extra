@@ -6,6 +6,7 @@
 * [`TzExtra.time_zone_identifiers/1`](#tzextratime_zone_identifiers1): returns a list of time zone identifiers
 * [`TzExtra.civil_time_zone_identifiers/1`](#tzextracivil_time_zone_identifiers1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
+* [`TzExtra.get_canonical_time_zone_identifier/1`](#tzextraget_canonical_time_zone_identifier1): returns the canonical time zone identifier for the given time zone identifier
 * [`TzExtra.Changeset.validate_time_zone_identifier/3`](#tzextraChangesetvalidate_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid time zone
 * [`TzExtra.Changeset.validate_civil_time_zone_identifier/3`](#tzextraChangesetvalidate_civil_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
@@ -98,6 +99,38 @@ This function returns only the time zone identifiers attached to a country. It t
 
 ```elixir
 iex> TzExtra.countries() |> Enum.take(5)
+```
+
+```elixir
+[
+  %{code: "AF", name: "Afghanistan"},
+  %{code: "AL", name: "Albania"},
+  %{code: "DZ", name: "Algeria"},
+  %{code: "AD", name: "Andorra"},
+  %{code: "AO", name: "Angola"}
+]
+```
+
+### `TzExtra.`TzExtra.get_canonical_time_zone_identifier/1`
+
+Returns the canonical time zone identifier for the given time zone identifier.
+
+If you pass a canonical time zone identifier, the same identifier will be returned.
+
+```elixir
+iex> TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
+```
+
+```elixir
+"Asia/Bangkok"
+```
+
+```elixir
+iex> TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
+```
+
+```elixir
+"Asia/Bangkok"
 ```
 
 ```elixir
