@@ -111,7 +111,7 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
-### `TzExtra.`TzExtra.get_canonical_time_zone_identifier/1`
+### `TzExtra.get_canonical_time_zone_identifier/1`
 
 Returns the canonical time zone identifier for the given time zone identifier.
 
