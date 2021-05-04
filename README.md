@@ -133,16 +133,6 @@ iex> TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
 "Asia/Bangkok"
 ```
 
-```elixir
-[
-  %{code: "AF", name: "Afghanistan"},
-  %{code: "AL", name: "Albania"},
-  %{code: "DZ", name: "Algeria"},
-  %{code: "AD", name: "Andorra"},
-  %{code: "AO", name: "Angola"}
-]
-```
-
 ### `TzExtra.Changeset.validate_time_zone_identifier/3`
 
 ```elixir
