@@ -96,7 +96,7 @@ defmodule TzExtra.ChangesetTest do
       |> validate_iso_country_code(:country_code)
 
     assert changeset.valid?
-    assert validations(changeset) == [country_code: {:country_code, []}]
+    assert validations(changeset) == [country_code: {:iso_country_code, []}]
   end
 
   test "invalid iso country code" do
@@ -107,7 +107,7 @@ defmodule TzExtra.ChangesetTest do
       |> validate_iso_country_code(:country_code)
 
     refute changeset.valid?
-    assert validations(changeset) == [country_code: {:country_code, []}]
-    assert changeset.errors == [country_code: {"is not a valid country code", [validation: :country_code]}]
+    assert validations(changeset) == [country_code: {:iso_country_code, []}]
+    assert changeset.errors == [country_code: {"is not a valid country code", [validation: :iso_country_code]}]
   end
 end
