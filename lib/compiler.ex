@@ -62,8 +62,8 @@ defmodule TzExtra.Compiler do
 
     contents = [
       quote do
-        def database_version() do
-          unquote(Tz.database_version())
+        def iana_version() do
+          unquote(Tz.iana_version())
         end
 
         def get_canonical_time_zone_identifier(time_zone_identifier) do
