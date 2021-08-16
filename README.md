@@ -184,9 +184,9 @@ Lastly, add the http client `mint` and ssl certificate store `castore` into your
 ```elixir
 defp deps do
   [
-    {:castore, "~> 0.1.10"},
+    {:castore, "~> 0.1.11"},
     {:mint, "~> 1.3"},
-    {:tz_extra, "~> 0.17.0"}
+    {:tz_extra, "~> 0.20.0"}
   ]
 end
 ```
@@ -210,7 +210,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.17.0"}
+    {:tz_extra, "~> 0.20.0"}
   ]
 end
 ```
