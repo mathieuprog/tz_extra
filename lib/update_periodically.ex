@@ -4,19 +4,29 @@ if Code.ensure_loaded?(Mint.HTTP) do
 
     require Logger
 
+    alias Tz.HTTP
     alias Tz.Updater
     alias TzExtra.Compiler
 
-    def start_link(_) do
-      GenServer.start_link(__MODULE__, %{})
+    def start_link(opts) do
+      HTTP.get_http_client!()
+
+      GenServer.start_link(__MODULE__, opts)
     end
 
-    def init(state) do
-      schedule_work()
-      {:ok, state}
+    def init(opts) do
+      work()
+      schedule_work(opts[:interval_in_days])
+      {:ok, %{opts: opts}}
     end
 
-    def handle_info(:work, state) do
+    def handle_info(:work, %{opts: opts}) do
+      work()
+      schedule_work(opts[:interval_in_days])
+      {:noreply, %{opts: opts}}
+    end
+
+    defp work() do
       Logger.debug("TzExtra is checking for IANA time zone database updates")
 
       Updater.maybe_recompile()
@@ -28,12 +38,10 @@ if Code.ensure_loaded?(Mint.HTTP) do
         Code.compiler_options(ignore_module_conflict: false)
         Logger.info("TzExtra compilation done")
       end
-
-      schedule_work()
-      {:noreply, state}
     end
 
-    defp schedule_work() do
+    defp schedule_work(interval_in_days) do
+      interval_in_days = interval_in_days || 1
       Process.send_after(self(), :work, 24 * 60 * 60 * 1000) # In 24 hours
     end
   end
