@@ -176,6 +176,12 @@ To enable automatic updates, add `TzExtra.UpdatePeriodically` as a child in your
 {TzExtra.UpdatePeriodically, []}
 ```
 
+You may pass the option `:interval_in_days` in order to configure the frequency of the task.
+
+```elixir
+{TzExtra.UpdatePeriodically, [interval_in_days: 5]}
+```
+
 `TzExtra.UpdatePeriodically` also triggers `tz`'s time zone recompilation; so you don't need to add
 `Tz.UpdatePeriodically` if you added `TzExtra.UpdatePeriodically` in your supervisor.
 
