@@ -1,48 +1,48 @@
-if Code.ensure_loaded?(Mint.HTTP) do
-  defmodule TzExtra.UpdatePeriodically do
-    use GenServer
+defmodule TzExtra.UpdatePeriodically do
+  use GenServer
 
-    require Logger
+  require Logger
 
-    alias Tz.HTTP
-    alias Tz.Updater
-    alias TzExtra.Compiler
+  alias Tz.HTTP
+  alias Tz.Updater, as: TzUpdater
+  alias TzExtra.Compiler
 
-    def start_link(opts) do
-      HTTP.get_http_client!()
+  defp maybe_recompile_tz() do
+    TzUpdater.maybe_recompile()
+  end
 
-      GenServer.start_link(__MODULE__, opts)
+  defp maybe_recompile_tz_extra() do
+    if Tz.iana_version() != TzExtra.iana_version() do
+      Logger.info("TzExtra is recompiling time zone data...")
+      Code.compiler_options(ignore_module_conflict: true)
+      Compiler.compile()
+      Code.compiler_options(ignore_module_conflict: false)
+      Logger.info("TzExtra compilation done")
     end
+  end
 
-    def init(opts) do
-      work()
-      schedule_work(opts[:interval_in_days])
-      {:ok, %{opts: opts}}
-    end
+  def start_link(opts) do
+    HTTP.get_http_client!()
 
-    def handle_info(:work, %{opts: opts}) do
-      work()
-      schedule_work(opts[:interval_in_days])
-      {:noreply, %{opts: opts}}
-    end
+    GenServer.start_link(__MODULE__, opts)
+  end
 
-    defp work() do
-      Logger.debug("TzExtra is checking for IANA time zone database updates")
+  def init(opts) do
+    maybe_recompile_tz()
+    maybe_recompile_tz_extra()
+    schedule_work(opts[:interval_in_days])
+    {:ok, %{opts: opts}}
+  end
 
-      Updater.maybe_recompile()
+  def handle_info(:work, %{opts: opts}) do
+    maybe_recompile_tz()
+    maybe_recompile_tz_extra()
+    schedule_work(opts[:interval_in_days])
+    {:noreply, %{opts: opts}}
+  end
 
-      if Tz.iana_version() != TzExtra.iana_version() do
-        Logger.info("TzExtra is recompiling time zone data...")
-        Code.compiler_options(ignore_module_conflict: true)
-        Compiler.compile()
-        Code.compiler_options(ignore_module_conflict: false)
-        Logger.info("TzExtra compilation done")
-      end
-    end
-
-    defp schedule_work(interval_in_days) do
-      interval_in_days = interval_in_days || 1
-      Process.send_after(self(), :work, interval_in_days * 24 * 60 * 60 * 1000)
-    end
+  defp schedule_work(interval_in_days) do
+    interval_in_days = interval_in_days || 1
+    Process.send_after(self(), :work, interval_in_days * 24 * 60 * 60 * 1000)
   end
 end
