@@ -21,10 +21,10 @@ defmodule TzExtra.IanaFileParser do
     end)
   end
 
-  def backward_compatible_links() do
+  def legacy_links() do
     Path.join([:code.priv_dir(:tz), "tzdata#{Tz.iana_version()}", "backward"])
     |> file_to_list()
-    |> parse_backward_compatible_links()
+    |> parse_legacy_links()
     |> merge_canonical_link_time_zones()
   end
 
@@ -74,9 +74,9 @@ defmodule TzExtra.IanaFileParser do
     [map | parse_countries(tail)]
   end
 
-  defp parse_backward_compatible_links([]), do: []
+  defp parse_legacy_links([]), do: []
 
-  defp parse_backward_compatible_links([string | tail]) do
+  defp parse_legacy_links([string | tail]) do
     map =
       Enum.zip([
         [:_, :canonical_zone_name, :link_zone_name],
@@ -86,7 +86,7 @@ defmodule TzExtra.IanaFileParser do
       |> Enum.into(%{})
       |> Map.delete(:_)
 
-    [map | parse_backward_compatible_links(tail)]
+    [map | parse_legacy_links(tail)]
   end
 
   defp merge_canonical_link_time_zones(time_zones) do

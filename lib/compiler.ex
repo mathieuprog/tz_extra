@@ -11,7 +11,7 @@ defmodule TzExtra.Compiler do
   def compile() do
     countries = IanaFileParser.countries()
     time_zones = IanaFileParser.time_zones()
-    backward_compatible_links = IanaFileParser.backward_compatible_links()
+    legacy_links = IanaFileParser.legacy_links()
 
     get_time_zone_links_for_canonical_fun =
       fn canonical ->
@@ -20,7 +20,7 @@ defmodule TzExtra.Compiler do
 
     get_all_time_zone_links_for_canonical_fun =
       fn canonical ->
-        time_zones[canonical] ++ backward_compatible_links[canonical]
+        time_zones[canonical] ++ legacy_links[canonical]
       end
 
     countries_time_zones =
