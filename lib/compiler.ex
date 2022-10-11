@@ -20,7 +20,7 @@ defmodule TzExtra.Compiler do
 
     get_all_time_zone_links_for_canonical_fun =
       fn canonical ->
-        time_zones[canonical] ++ legacy_links[canonical]
+        time_zones[canonical] ++ (legacy_links[canonical] || [])
       end
 
     countries_time_zones =
