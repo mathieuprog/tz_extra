@@ -1,6 +1,6 @@
 # TzExtra
 
-`tz_extra` provides a few utilities to work with time zones:
+`tz_extra` provides a few utilities to work with time zones. It uses [`Tz`](https://github.com/mathieuprog/tz) under the hood, which brings time zone support for Elixir.
 
 * [`TzExtra.countries_time_zones/1`](#tzextracountries_time_zones1): returns a list of time zone data by country
 * [`TzExtra.time_zone_identifiers/1`](#tzextratime_zone_identifiers1): returns a list of time zone identifiers
@@ -185,14 +185,14 @@ You may pass the option `:interval_in_days` in order to configure the frequency 
 `TzExtra.UpdatePeriodically` also triggers `tz`'s time zone recompilation; so you don't need to add
 `Tz.UpdatePeriodically` if you added `TzExtra.UpdatePeriodically` in your supervisor.
 
-Lastly, add the http client `mint` and ssl certificate store `castore` into your `mix.exs` file:
+Lastly, if you did not configure a custom http client for `tz`, add the default http client `mint` and ssl certificate store `castore` into your `mix.exs` file:
 
 ```elixir
 defp deps do
   [
     {:castore, "~> 0.1.18"},
     {:mint, "~> 1.4"},
-    {:tz_extra, "~> 0.22.1"}
+    {:tz_extra, "~> 0.23.0"}
   ]
 end
 ```
@@ -216,7 +216,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.22.1"}
+    {:tz_extra, "~> 0.23.0"}
   ]
 end
 ```
