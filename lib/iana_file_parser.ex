@@ -21,15 +21,8 @@ defmodule TzExtra.IanaFileParser do
     end)
   end
 
-  def legacy_links() do
-    Path.join([:code.priv_dir(:tz), "tzdata#{Tz.iana_version()}", "backward"])
-    |> file_to_list()
-    |> parse_legacy_links()
-    |> merge_canonical_link_time_zones()
-  end
-
   def time_zones() do
-    for filename <- ~w(africa antarctica asia australasia etcetera europe northamerica southamerica)s do
+    for filename <- ~w(africa antarctica asia australasia backward etcetera europe northamerica southamerica)s do
       Path.join([:code.priv_dir(:tz), "tzdata#{Tz.iana_version()}", filename])
       |> file_to_list()
       |> parse_time_zones()
@@ -72,21 +65,6 @@ defmodule TzExtra.IanaFileParser do
       |> Enum.into(%{})
 
     [map | parse_countries(tail)]
-  end
-
-  defp parse_legacy_links([]), do: []
-
-  defp parse_legacy_links([string | tail]) do
-    map =
-      Enum.zip([
-        [:_, :canonical_zone_name, :link_zone_name],
-        String.split(string, ~r{\s}, trim: true, parts: 3)
-        |> Enum.map(& String.trim(&1))
-      ])
-      |> Enum.into(%{})
-      |> Map.delete(:_)
-
-    [map | parse_legacy_links(tail)]
   end
 
   defp merge_canonical_link_time_zones(time_zones) do

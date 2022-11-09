@@ -40,4 +40,8 @@ defmodule TzExtraTest do
       TzExtra.get_canonical_time_zone_identifier("foo")
     end
   end
+
+  test "iana_version/0" do
+    assert TzExtra.iana_version() == Tz.iana_version()
+  end
 end
