@@ -139,7 +139,7 @@ iex> TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
 import TzExtra.Changeset
 
 changeset
-|> validate_time_zone(:time_zone)
+|> validate_time_zone_identifier(:time_zone)
 ```
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
@@ -150,7 +150,7 @@ You may pass the option `:allow_alias` to allow time zone aliases, as well as th
 import TzExtra.Changeset
 
 changeset
-|> validate_civil_time_zone(:time_zone)
+|> validate_civil_time_zone_identifier(:time_zone)
 ```
 
 You may pass the options `:allow_alias` and `:allow_utc` to allow time zone aliases and the UTC time zone, as well as the `:message` option to customize the error message.
