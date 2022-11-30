@@ -23,7 +23,7 @@ defmodule TzExtra.IanaFileParser do
 
   def time_zones() do
     for filename <- ~w(africa antarctica asia australasia backward etcetera europe northamerica southamerica)s do
-      Path.join([:code.priv_dir(:tz), "tzdata#{Tz.iana_version()}", filename])
+      Path.join([Tz.IanaDataDir.dir(), "tzdata#{Tz.iana_version()}", filename])
       |> file_to_list()
       |> parse_time_zones()
     end
