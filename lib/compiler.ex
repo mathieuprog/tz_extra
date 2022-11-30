@@ -11,22 +11,15 @@ defmodule TzExtra.Compiler do
   def compile() do
     countries = IanaFileParser.countries()
     time_zones = IanaFileParser.time_zones()
-    legacy_links = IanaFileParser.legacy_links()
 
     get_time_zone_links_for_canonical_fun =
       fn canonical ->
         time_zones[canonical]
       end
 
-    get_all_time_zone_links_for_canonical_fun =
-      fn canonical ->
-        time_zones[canonical] ++ legacy_links[canonical]
-      end
-
     countries_time_zones =
       IanaFileParser.time_zones_with_country(countries)
-      |> add_time_zone_links(:time_zone_links, get_time_zone_links_for_canonical_fun)
-      |> add_time_zone_links(:all_time_zone_links, get_all_time_zone_links_for_canonical_fun)
+      |> add_time_zone_links(get_time_zone_links_for_canonical_fun)
       |> add_offset_data()
       |> Enum.sort_by(&{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone})
 
@@ -179,9 +172,9 @@ defmodule TzExtra.Compiler do
     end)
   end
 
-  defp add_time_zone_links(countries_time_zones, key, get_time_zone_links_for_canonical_fun) do
+  defp add_time_zone_links(countries_time_zones, get_time_zone_links_for_canonical_fun) do
     Enum.map(countries_time_zones, fn %{time_zone: time_zone_id} = time_zone ->
-      Map.put(time_zone, key, get_time_zone_links_for_canonical_fun.(time_zone_id))
+      Map.put(time_zone, :time_zone_links, get_time_zone_links_for_canonical_fun.(time_zone_id))
     end)
   end
 end
