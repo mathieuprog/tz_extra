@@ -13,7 +13,7 @@ defmodule TzExtra.UpdatePeriodically do
 
   defp maybe_recompile_tz_extra() do
     if Tz.iana_version() != TzExtra.iana_version() do
-      Logger.info("TzExtra is recompiling time zone data...")
+      Logger.info("TzExtra is recompiling the time zone data...")
       Code.compiler_options(ignore_module_conflict: true)
       Compiler.compile()
       Code.compiler_options(ignore_module_conflict: false)
