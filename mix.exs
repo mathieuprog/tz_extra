@@ -44,7 +44,10 @@ defmodule TzExtra.MixProject do
     [
       licenses: ["Apache-2.0"],
       maintainers: ["Mathieu Decaffmeyer"],
-      links: %{"GitHub" => "https://github.com/mathieuprog/tz_extra"}
+      links: %{
+        "GitHub" => "https://github.com/mathieuprog/tz_extra",
+        "Sponsor" => "https://github.com/sponsors/mathieuprog"
+      }
     ]
   end
 
