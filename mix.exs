@@ -1,7 +1,7 @@
 defmodule TzExtra.MixProject do
   use Mix.Project
 
-  @version "0.25.0"
+  @version "0.26.0"
 
   def project do
     [
@@ -30,7 +30,7 @@ defmodule TzExtra.MixProject do
 
   defp deps do
     [
-      {:tz, "~> 0.25.0"},
+      {:tz, "~> 0.26"},
       {:ecto, "~> 3.9", optional: true},
       {:jason, "~> 1.4", only: :dev},
       {:ex_doc, "~> 0.29", only: :dev}
