@@ -6,26 +6,9 @@ defmodule TzExtra.Compiler do
 
   alias TzExtra.IanaFileParser
 
-  @utc_time_zone_id "Etc/UTC"
-
   def compile() do
     countries = IanaFileParser.countries()
     time_zones = IanaFileParser.time_zones()
-
-    get_time_zone_links_for_canonical_fun =
-      fn canonical ->
-        time_zones[canonical]
-      end
-
-    countries_time_zones =
-      IanaFileParser.time_zones_with_country(countries)
-      |> add_time_zone_links(get_time_zone_links_for_canonical_fun)
-      |> add_offset_data()
-      |> Enum.sort_by(&{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone})
-
-    [utc_data] = add_offset_data([%{coordinates: nil, country: nil, time_zone: @utc_time_zone_id, time_zone_links: []}])
-
-    countries_time_zones_with_utc = [utc_data | countries_time_zones]
 
     canonical_time_zones =
       time_zones
@@ -39,22 +22,8 @@ defmodule TzExtra.Compiler do
       |> List.flatten()
       |> Enum.uniq()
       |> Enum.sort()
-      |> Enum.sort()
 
-    civil_time_zones =
-      countries_time_zones
-      |> Enum.map(&(&1.time_zone))
-      |> Enum.uniq()
-      |> Enum.sort()
-
-    civil_time_zones_with_links =
-      countries_time_zones
-      |> Enum.map(&([&1.time_zone | &1.time_zone_links]))
-      |> List.flatten()
-      |> Enum.uniq()
-      |> Enum.sort()
-
-    alias_canonical_map =
+    link_canonical_map =
       time_zones
       |> Enum.reduce(%{}, fn {canonical, links}, map ->
         Enum.reduce(links, map, fn link, map ->
@@ -63,6 +32,85 @@ defmodule TzExtra.Compiler do
         |> Map.put(canonical, canonical)
       end)
 
+    get_time_zone_links_for_canonical_fun =
+      fn canonical ->
+        time_zones[canonical]
+      end
+
+    countries_time_zones =
+      IanaFileParser.time_zones_with_country(countries)
+      |> add_time_zone_links(get_time_zone_links_for_canonical_fun)
+      |> add_offset_data()
+      |> Enum.sort_by(
+        &{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone}
+      )
+
+    civil_time_zones =
+      countries_time_zones
+      |> Enum.map(& &1.time_zone)
+      |> Enum.uniq()
+      |> Enum.sort()
+
+    civil_time_zones_with_links =
+      countries_time_zones
+      |> Enum.map(&[&1.time_zone | &1.time_zone_links])
+      |> List.flatten()
+      |> Enum.uniq()
+      |> Enum.sort()
+
+    quoted = [
+      for time_zone <- all_time_zones do
+        canonical_time_zone = link_canonical_map[time_zone]
+
+        countries_time_zones =
+          Enum.filter(countries_time_zones, &(&1.time_zone == canonical_time_zone))
+
+        if length(countries_time_zones) > 0 do
+          quote do
+            def for_time_zone(unquote(time_zone)) do
+              {:ok, unquote(Macro.escape(countries_time_zones))}
+            end
+          end
+        else
+          quote do
+            def for_time_zone(unquote(time_zone)) do
+              {:error, :time_zone_not_linked_to_country}
+            end
+          end
+        end
+      end,
+      quote do
+        def for_time_zone(_) do
+          {:error, :time_zone_not_found}
+        end
+      end,
+      for %{code: country_code} <- countries do
+        countries_time_zones =
+          Enum.filter(countries_time_zones, &(&1.country.code == country_code))
+
+        country_code_atom = String.to_atom(country_code)
+
+        quote do
+          def for_country_code(unquote(country_code)) do
+            {:ok, unquote(Macro.escape(countries_time_zones))}
+          end
+
+          def for_country_code(unquote(country_code_atom)) do
+            {:ok, unquote(Macro.escape(countries_time_zones))}
+          end
+        end
+      end,
+      quote do
+        def for_country_code(_) do
+          {:error, :country_not_found}
+        end
+      end
+    ]
+
+    module = :"Elixir.TzExtra.CountryTimeZone"
+    Module.create(module, quoted, Macro.Env.location(__ENV__))
+    :code.purge(module)
+
     contents = [
       quote do
         def iana_version() do
@@ -70,46 +118,32 @@ defmodule TzExtra.Compiler do
         end
 
         def get_canonical_time_zone_identifier(time_zone_identifier) do
-          unquote(Macro.escape(alias_canonical_map))[time_zone_identifier] ||
+          unquote(Macro.escape(link_canonical_map))[time_zone_identifier] ||
             raise "time zone identifier \"#{time_zone_identifier}\" not found"
         end
 
         def civil_time_zone_identifiers(opts \\ []) do
-          prepend_utc = Keyword.get(opts, :prepend_utc, false)
-          include_alias = Keyword.get(opts, :include_alias, false)
+          include_aliases = Keyword.get(opts, :include_aliases, false)
 
-          time_zones =
-            if include_alias do
-              unquote(Macro.escape(civil_time_zones_with_links))
-            else
-              unquote(Macro.escape(civil_time_zones))
-            end
-
-          if prepend_utc do
-            [unquote(@utc_time_zone_id) | time_zones]
+          if include_aliases do
+            unquote(Macro.escape(civil_time_zones_with_links))
           else
-            time_zones
+            unquote(Macro.escape(civil_time_zones))
           end
         end
 
         def time_zone_identifiers(opts \\ []) do
-          include_alias = Keyword.get(opts, :include_alias, false)
+          include_aliases = Keyword.get(opts, :include_aliases, false)
 
-          if include_alias do
+          if include_aliases do
             unquote(Macro.escape(all_time_zones))
           else
             unquote(Macro.escape(canonical_time_zones))
           end
         end
 
-        def countries_time_zones(opts \\ []) do
-          prepend_utc = Keyword.get(opts, :prepend_utc, false)
-
-          if prepend_utc do
-            unquote(Macro.escape(countries_time_zones_with_utc))
-          else
-            unquote(Macro.escape(countries_time_zones))
-          end
+        def countries_time_zones() do
+          unquote(Macro.escape(countries_time_zones))
         end
 
         def countries() do
@@ -174,7 +208,11 @@ defmodule TzExtra.Compiler do
 
   defp add_time_zone_links(countries_time_zones, get_time_zone_links_for_canonical_fun) do
     Enum.map(countries_time_zones, fn %{time_zone: time_zone_id} = time_zone ->
-      Map.put(time_zone, :time_zone_links, get_time_zone_links_for_canonical_fun.(time_zone_id))
+      Map.put(
+        time_zone,
+        :time_zone_links,
+        get_time_zone_links_for_canonical_fun.(time_zone_id)
+      )
     end)
   end
 end

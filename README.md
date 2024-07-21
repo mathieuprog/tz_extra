@@ -2,7 +2,9 @@
 
 `tz_extra` provides a few utilities to work with time zones. It uses [`Tz`](https://github.com/mathieuprog/tz) under the hood, which brings time zone support for Elixir.
 
-* [`TzExtra.countries_time_zones/1`](#tzextracountries_time_zones1): returns a list of time zone data by country
+* [`TzExtra.countries_time_zones/0`](#tzextracountries_time_zones0): returns a list of time zone data by country
+* [`TzExtra.CountryTimeZone.for_country_code/1`](#tzextracountrytimezonefor_country_code1): returns a list of time zone data for a given country
+* [`TzExtra.CountryTimeZone.for_time_zone/1`](#tzextracountrytimezonefor_time_zone1): returns a list of time zone data for a time zone
 * [`TzExtra.time_zone_identifiers/1`](#tzextratime_zone_identifiers1): returns a list of time zone identifiers
 * [`TzExtra.civil_time_zone_identifiers/1`](#tzextracivil_time_zone_identifiers1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
@@ -11,7 +13,7 @@
 * [`TzExtra.Changeset.validate_civil_time_zone_identifier/3`](#tzextraChangesetvalidate_civil_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
 
-### `TzExtra.countries_time_zones/1`
+### `TzExtra.countries_time_zones/0`
 
 Returns a list of time zone data by country. The data includes:
 * the country and time zone;
@@ -48,22 +50,13 @@ iex> TzExtra.countries_time_zones() |> Enum.at(5)
 Note that a time zone may be observed by multiple countries. For example, the tz database version `2019c` lists 10
 countries observing the time zone `Africa/Lagos`; this will result in 10 map entries for that time zone.
 
-You may pass the `:prepend_utc` option set to `true`, in order to add the UTC time zone to the list; the following map is then added:
+### `TzExtra.CountryTimeZone.for_country_code/1`
 
-```elixir
-%{
-  coordinates: nil,
-  country: nil,
-  dst_offset: 0,
-  dst_zone_abbr: "UTC",
-  pretty_dst_offset: "+00:00",
-  pretty_utc_offset: "+00:00",
-  time_zone: "UTC",
-  time_zone_links: [],
-  utc_offset: 0,
-  zone_abbr: "UTC"
-}
-```
+Returns a list of time zone data for the given country code (string or atom).
+
+### `TzExtra.CountryTimeZone.for_time_zone/1`
+
+Returns a list of time zone data for the given time zone.
 
 ### `TzExtra.time_zone_identifiers/1`
 
@@ -81,7 +74,7 @@ iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
 ]
 ```
 
-This function can take an option `:include_alias` (by default set to `false`). By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases (also called links).
+This function can take an option `:include_aliases` (by default set to `false`) to include time zone aliases. By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases (also called links).
 
 ### `TzExtra.civil_time_zone_identifiers/1`
 
@@ -90,10 +83,8 @@ iex> TzExtra.civil_time_zone_identifiers()
 ```
 
 This function returns only the time zone identifiers attached to a country. It takes two options:
-* `:include_alias` (by default set to `false`)
+* `:include_aliases` (by default set to `false`)
   By default, only canonical time zones are returned. Set this option to `false` to include time zone aliases (also called links).
-* `:prepend_utc` (by default set to `false`)
-  Add the UTC time zone as the first element of the time zone list.
 
 ### `TzExtra.countries/0`
 
@@ -153,7 +144,7 @@ changeset
 |> validate_civil_time_zone_identifier(:time_zone)
 ```
 
-You may pass the options `:allow_alias` and `:allow_utc` to allow time zone aliases and the UTC time zone, as well as the `:message` option to customize the error message.
+You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
 
 ### `TzExtra.Changeset.validate_iso_country_code/3`
 
