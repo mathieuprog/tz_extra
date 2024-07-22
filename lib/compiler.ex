@@ -143,6 +143,16 @@ defmodule TzExtra.Compiler do
           end
         end
 
+        def country_time_zone(country_code_or_time_zone) do
+          country_code_or_time_zone = to_string(country_code_or_time_zone)
+
+          if String.length(country_code_or_time_zone) == 2 do
+            :"Elixir.TzExtra.CountryTimeZone".for_country_code(country_code_or_time_zone)
+          else
+            :"Elixir.TzExtra.CountryTimeZone".for_time_zone(country_code_or_time_zone)
+          end
+        end
+
         def countries_time_zones() do
           unquote(Macro.escape(countries_time_zones))
         end
