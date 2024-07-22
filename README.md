@@ -58,6 +58,8 @@ Returns a list of time zone data for the given country code (string or atom).
 
 Returns a list of time zone data for the given time zone.
 
+You may also call `TzExtra.country_time_zone/1` which takes a country code or a time zone as argument.
+
 ### `TzExtra.time_zone_identifiers/1`
 
 ```elixir
