@@ -16,13 +16,14 @@ defmodule TzExtra.IanaFileParser do
     |> parse_time_zones_with_country()
     |> Enum.map(fn map ->
       {country_code, map} = pop_in(map, [:country_code])
-      country = Enum.find(countries, & &1.code == country_code)
+      country = Enum.find(countries, &(&1.code == country_code))
       Map.put(map, :country, country)
     end)
   end
 
   def time_zones() do
-    for filename <- ~w(africa antarctica asia australasia backward etcetera europe northamerica southamerica)s do
+    for filename <-
+          ~w(africa antarctica asia australasia backward etcetera europe northamerica southamerica)s do
       Path.join([Tz.IanaDataDir.dir(), "tzdata#{Tz.iana_version()}", filename])
       |> file_to_list()
       |> parse_time_zones()
@@ -60,7 +61,7 @@ defmodule TzExtra.IanaFileParser do
       Enum.zip([
         [:code, :name],
         String.split(string, ~r{\s}, trim: true, parts: 2)
-        |> Enum.map(& String.trim(&1))
+        |> Enum.map(&String.trim(&1))
       ])
       |> Enum.into(%{})
 
@@ -97,7 +98,7 @@ defmodule TzExtra.IanaFileParser do
     Enum.zip([
       [:canonical_zone_name, :link_zone_name],
       tl(String.split(link_string, ~r{\s}, trim: true, parts: 3))
-      |> Enum.map(& String.trim(&1))
+      |> Enum.map(&String.trim(&1))
     ])
     |> Enum.into(%{})
   end
@@ -106,7 +107,7 @@ defmodule TzExtra.IanaFileParser do
     Enum.zip([
       [:canonical_zone_name],
       tl(String.split(zone_string, ~r{\s}, trim: true, parts: 6))
-      |> Enum.map(& String.trim(&1))
+      |> Enum.map(&String.trim(&1))
     ])
     |> Enum.into(%{})
   end
@@ -118,7 +119,7 @@ defmodule TzExtra.IanaFileParser do
       Enum.zip([
         [:country_codes, :coordinates, :time_zone, :_],
         String.split(string, ~r{\s}, trim: true, parts: 4)
-        |> Enum.map(& String.trim(&1))
+        |> Enum.map(&String.trim(&1))
       ])
       |> Enum.into(%{})
       |> Map.delete(:_)
@@ -131,7 +132,7 @@ defmodule TzExtra.IanaFileParser do
         coordinates: map.coordinates,
         time_zone: map.time_zone
       }
-    end
-    ++ parse_time_zones_with_country(tail)
+    end ++
+      parse_time_zones_with_country(tail)
   end
 end
