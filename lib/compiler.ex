@@ -34,7 +34,7 @@ defmodule TzExtra.Compiler do
 
     get_time_zone_links_for_canonical_fun =
       fn canonical ->
-        time_zones[canonical]
+        time_zones[canonical] |> Enum.sort()
       end
 
     countries_time_zones =
