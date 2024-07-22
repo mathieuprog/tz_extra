@@ -31,7 +31,7 @@ iex> TzExtra.countries_time_zones() |> Enum.at(5)
 ```elixir
 %{
   coordinates: "+0627+00324",
-  country: %{code: "AO", name: "Angola"},
+  country: %{code: "AO", name: "Angola", local_names: ["Angola"]},
   dst_offset: 3600,
   dst_zone_abbr: "WAT",
   pretty_dst_offset: "+01:00",
@@ -183,7 +183,7 @@ defp deps do
   [
     {:castore, "~> 0.1.18"},
     {:mint, "~> 1.4"},
-    {:tz_extra, "~> 0.27.0"}
+    {:tz_extra, "~> 0.28.0"}
   ]
 end
 ```
@@ -207,7 +207,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.27.0"}
+    {:tz_extra, "~> 0.28.0"}
   ]
 end
 ```
