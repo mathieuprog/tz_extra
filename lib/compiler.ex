@@ -60,23 +60,35 @@ defmodule TzExtra.Compiler do
       |> Enum.sort()
 
     quoted = [
-      for time_zone <- all_time_zones do
-        canonical_time_zone = link_canonical_map[time_zone]
-
+      for canonical_time_zone <- canonical_time_zones do
         countries_time_zones =
           Enum.filter(countries_time_zones, &(&1.time_zone == canonical_time_zone))
 
         if length(countries_time_zones) > 0 do
           quote do
-            def for_time_zone(unquote(time_zone)) do
+            def for_time_zone(unquote(canonical_time_zone)) do
               {:ok, unquote(Macro.escape(countries_time_zones))}
             end
           end
         else
           quote do
-            def for_time_zone(unquote(time_zone)) do
+            def for_time_zone(unquote(canonical_time_zone)) do
               {:error, :time_zone_not_linked_to_country}
             end
+          end
+        end
+      end,
+      quote do
+        def for_time_zone(link_time_zone) do
+          canonical_time_zone = unquote(Macro.escape(link_canonical_map))[link_time_zone]
+
+          countries_time_zones_for_link =
+            Enum.filter(unquote(Macro.escape(countries_time_zones)), &(&1.time_zone == canonical_time_zone))
+
+          if countries_time_zones_for_link do
+            {:ok, countries_time_zones_for_link}
+          else
+            {:error, :time_zone_not_linked_to_country}
           end
         end
       end,
@@ -97,7 +109,7 @@ defmodule TzExtra.Compiler do
           end
 
           def for_country_code(unquote(country_code_atom)) do
-            {:ok, unquote(Macro.escape(countries_time_zones))}
+            for_country_code(unquote(country_code))
           end
         end
       end,
@@ -159,6 +171,34 @@ defmodule TzExtra.Compiler do
 
         def countries() do
           unquote(Macro.escape(countries))
+        end
+      end,
+      for %{code: country_code} <- countries do
+        {:ok, time_zones_for_country} = :"Elixir.TzExtra.CountryTimeZone".for_country_code(country_code)
+
+        country_code_atom = String.to_atom(country_code)
+
+        quote do
+          def country_time_zone(unquote(country_code), time_zone) do
+            canonical_time_zone = get_canonical_time_zone_identifier(time_zone)
+
+            country_time_zone = Enum.find(unquote(Macro.escape(time_zones_for_country)), & &1.time_zone == canonical_time_zone)
+
+            if country_time_zone do
+              {:ok, country_time_zone}
+            else
+              {:error, :time_zone_not_found_for_country}
+            end
+          end
+
+          def country_time_zone(unquote(country_code_atom), time_zone) do
+            country_time_zone(unquote(country_code), time_zone)
+          end
+        end
+      end,
+      quote do
+        def country_time_zone(_, _) do
+          {:error, :country_not_found}
         end
       end
     ]
