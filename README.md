@@ -183,9 +183,9 @@ Lastly, if you did not configure a custom http client for `tz`, add the default 
 ```elixir
 defp deps do
   [
-    {:castore, "~> 0.1.18"},
-    {:mint, "~> 1.4"},
-    {:tz_extra, "~> 0.29.0"}
+    {:castore, "~> 1.0"},
+    {:mint, "~> 1.6"},
+    {:tz_extra, "~> 0.30.0"}
   ]
 end
 ```
@@ -209,7 +209,7 @@ Add `tz_extra` for Elixir as a dependency in your `mix.exs` file:
 ```elixir
 def deps do
   [
-    {:tz_extra, "~> 0.29.0"}
+    {:tz_extra, "~> 0.30.0"}
   ]
 end
 ```
