@@ -39,8 +39,8 @@ iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
   country: %{code: "BE", name: "Belgium", local_names: ["België", "Belgique"]},
   coordinates: "+5050+00420",
 
-  zone_abbr: "CET",
-  dst_zone_abbr: "CEST",
+  time_zone_abbr: "CET",
+  dst_time_zone_abbr: "CEST",
 
   utc_to_std_offset: 3600,
   utc_to_dst_offset: 7200,

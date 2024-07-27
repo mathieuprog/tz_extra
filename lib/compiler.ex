@@ -290,24 +290,24 @@ defmodule TzExtra.Compiler do
     Enum.map(time_zones, fn %{time_zone_id: time_zone_id} = time_zone ->
       {:ok, periods} = Tz.PeriodsProvider.periods(time_zone_id)
 
-      {utc_to_std_offset, utc_to_dst_offset, zone_abbr, dst_zone_abbr} =
+      {utc_to_std_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr} =
         case hd(periods) do
-          {_, {utc_offset, std_offset, zone_abbr}, _, nil} ->
-            {utc_offset, utc_offset + std_offset, zone_abbr, zone_abbr}
+          {_, {utc_offset, std_offset, time_zone_abbr}, _, nil} ->
+            {utc_offset, utc_offset + std_offset, time_zone_abbr, time_zone_abbr}
 
-          {_, {utc_offset, std_offset, zone_abbr}, {_, prev_std_offset, prev_zone_abbr}, _} ->
+          {_, {utc_offset, std_offset, time_zone_abbr}, {_, prev_std_offset, prev_zone_abbr}, _} ->
             utc_to_dst_offset = utc_offset + max(std_offset, prev_std_offset)
 
-            {zone_abbr, dst_zone_abbr} =
+            {time_zone_abbr, dst_time_zone_abbr} =
               cond do
                 std_offset < prev_std_offset ->
-                  {zone_abbr, prev_zone_abbr}
+                  {time_zone_abbr, prev_zone_abbr}
 
                 std_offset > prev_std_offset ->
-                  {prev_zone_abbr, zone_abbr}
+                  {prev_zone_abbr, time_zone_abbr}
               end
 
-            {utc_offset, utc_to_dst_offset, zone_abbr, dst_zone_abbr}
+            {utc_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr}
         end
 
       time_zone
@@ -323,8 +323,8 @@ defmodule TzExtra.Compiler do
         :pretty_utc_to_dst_offset_id,
         "UTC" <> offset_to_string(utc_to_dst_offset, :pretty)
       )
-      |> Map.put(:zone_abbr, zone_abbr)
-      |> Map.put(:dst_zone_abbr, dst_zone_abbr)
+      |> Map.put(:time_zone_abbr, time_zone_abbr)
+      |> Map.put(:dst_time_zone_abbr, dst_time_zone_abbr)
     end)
   end
 
