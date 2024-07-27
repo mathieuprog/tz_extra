@@ -11,10 +11,10 @@ defmodule TzExtraTest do
 
     assert 2 ==
              TzExtra.countries_time_zones()
-             |> Enum.filter(&(&1.time_zone == "Europe/Simferopol"))
+             |> Enum.filter(&(&1.time_zone_id == "Europe/Simferopol"))
              |> Enum.count()
 
-    refute TzExtra.countries_time_zones() |> Enum.any?(&(&1.time_zone == "Etc/UTC"))
+    refute TzExtra.countries_time_zones() |> Enum.any?(&(&1.time_zone_id == "Etc/UTC"))
   end
 
   test "time_zone_identifiers/1" do

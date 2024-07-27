@@ -117,7 +117,7 @@ defmodule TzExtra.IanaFileParser do
   defp parse_time_zones_with_country([string | tail]) do
     map =
       Enum.zip([
-        [:country_codes, :coordinates, :time_zone, :_],
+        [:country_codes, :coordinates, :time_zone_id, :_],
         String.split(string, ~r{\s}, trim: true, parts: 4)
         |> Enum.map(&String.trim(&1))
       ])
@@ -130,7 +130,7 @@ defmodule TzExtra.IanaFileParser do
       %{
         country_code: country_code,
         coordinates: map.coordinates,
-        time_zone: map.time_zone
+        time_zone_id: map.time_zone_id
       }
     end ++
       parse_time_zones_with_country(tail)

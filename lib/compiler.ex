@@ -43,18 +43,18 @@ defmodule TzExtra.Compiler do
       |> add_offset_data()
       |> localize_country_name()
       |> Enum.sort_by(
-        &{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone}
+        &{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone_id}
       )
 
     civil_time_zones =
       countries_time_zones
-      |> Enum.map(& &1.time_zone)
+      |> Enum.map(& &1.time_zone_id)
       |> Enum.uniq()
       |> Enum.sort()
 
     civil_time_zones_with_links =
       countries_time_zones
-      |> Enum.map(&[&1.time_zone | &1.time_zone_links])
+      |> Enum.map(&[&1.time_zone_id | &1.time_zone_link_ids])
       |> List.flatten()
       |> Enum.uniq()
       |> Enum.sort()
@@ -62,7 +62,7 @@ defmodule TzExtra.Compiler do
     quoted = [
       for canonical_time_zone <- canonical_time_zones do
         countries_time_zones =
-          Enum.filter(countries_time_zones, &(&1.time_zone == canonical_time_zone))
+          Enum.filter(countries_time_zones, &(&1.time_zone_id == canonical_time_zone))
 
         if length(countries_time_zones) > 0 do
           quote do
@@ -83,7 +83,7 @@ defmodule TzExtra.Compiler do
           canonical_time_zone = unquote(Macro.escape(link_canonical_map))[link_time_zone]
 
           countries_time_zones_for_link =
-            Enum.filter(unquote(Macro.escape(countries_time_zones)), &(&1.time_zone == canonical_time_zone))
+            Enum.filter(unquote(Macro.escape(countries_time_zones)), &(&1.time_zone_id == canonical_time_zone))
 
           if countries_time_zones_for_link do
             {:ok, countries_time_zones_for_link}
@@ -179,10 +179,10 @@ defmodule TzExtra.Compiler do
         country_code_atom = String.to_atom(country_code)
 
         quote do
-          def country_time_zone(unquote(country_code), time_zone) do
-            canonical_time_zone = get_canonical_time_zone_identifier(time_zone)
+          def country_time_zone(unquote(country_code), time_zone_id) do
+            canonical_time_zone = get_canonical_time_zone_identifier(time_zone_id)
 
-            country_time_zone = Enum.find(unquote(Macro.escape(time_zones_for_country)), & &1.time_zone == canonical_time_zone)
+            country_time_zone = Enum.find(unquote(Macro.escape(time_zones_for_country)), & &1.time_zone_id == canonical_time_zone)
 
             if country_time_zone do
               {:ok, country_time_zone}
@@ -191,8 +191,8 @@ defmodule TzExtra.Compiler do
             end
           end
 
-          def country_time_zone(unquote(country_code_atom), time_zone) do
-            country_time_zone(unquote(country_code), time_zone)
+          def country_time_zone(unquote(country_code_atom), time_zone_id) do
+            country_time_zone(unquote(country_code), time_zone_id)
           end
         end
       end,
@@ -208,23 +208,8 @@ defmodule TzExtra.Compiler do
     :code.purge(module)
   end
 
-  # defp add_offset_data(time_zones) do
-  #   %{
-  #     coordinates: nil,
-  #     country: nil,
-  #     dst_offset: 0,
-  #     dst_zone_abbr: "UTC",
-  #     pretty_dst_offset: "+00:00",
-  #     pretty_utc_offset: "+00:00",
-  #     time_zone: "UTC",
-  #     time_zone_links: [],
-  #     utc_offset: 0,
-  #     zone_abbr: "UTC"
-  #   }
-  # end
-
   defp add_offset_data(time_zones) do
-    Enum.map(time_zones, fn %{time_zone: time_zone_id} = time_zone ->
+    Enum.map(time_zones, fn %{time_zone_id: time_zone_id} = time_zone ->
       {:ok, periods} = Tz.PeriodsProvider.periods(time_zone_id)
 
       {utc_offset, dst_offset, zone_abbr, dst_zone_abbr} =
@@ -250,18 +235,20 @@ defmodule TzExtra.Compiler do
       time_zone
       |> Map.put(:utc_offset, utc_offset)
       |> Map.put(:dst_offset, dst_offset)
-      |> Map.put(:pretty_utc_offset, offset_to_string(utc_offset))
-      |> Map.put(:pretty_dst_offset, offset_to_string(dst_offset))
+      |> Map.put(:utc_offset_identifier, "UTC" <> offset_to_string(utc_offset, :standard))
+      |> Map.put(:dst_offset_identifier, "UTC" <> offset_to_string(dst_offset, :standard))
+      |> Map.put(:pretty_utc_offset_identifier, "UTC" <> offset_to_string(utc_offset, :pretty))
+      |> Map.put(:pretty_dst_offset_identifier, "UTC" <> offset_to_string(dst_offset, :pretty))
       |> Map.put(:zone_abbr, zone_abbr)
       |> Map.put(:dst_zone_abbr, dst_zone_abbr)
     end)
   end
 
   defp add_time_zone_links(countries_time_zones, get_time_zone_links_for_canonical_fun) do
-    Enum.map(countries_time_zones, fn %{time_zone: time_zone_id} = time_zone ->
+    Enum.map(countries_time_zones, fn %{time_zone_id: time_zone_id} = time_zone ->
       Map.put(
         time_zone,
-        :time_zone_links,
+        :time_zone_link_ids,
         get_time_zone_links_for_canonical_fun.(time_zone_id)
       )
     end)

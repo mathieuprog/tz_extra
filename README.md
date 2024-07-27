@@ -25,25 +25,26 @@ Returns a list of time zone data by country. The data includes:
 #### Example
 
 ```elixir
-iex> TzExtra.countries_time_zones() |> Enum.at(5)
+iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
 ```
 
 ```elixir
 %{
-  coordinates: "+0627+00324",
-  country: %{code: "AO", name: "Angola", local_names: ["Angola"]},
-  dst_offset: 3600,
-  dst_zone_abbr: "WAT",
-  pretty_dst_offset: "+01:00",
-  pretty_utc_offset: "+01:00",
-  time_zone: "Africa/Lagos",
-  time_zone_links: [
-    "Africa/Bangui", "Africa/Brazzaville", "Africa/Douala",
-    "Africa/Kinshasa", "Africa/Libreville", "Africa/Luanda",
-    "Africa/Malabo", "Africa/Niamey", "Africa/Porto-Novo"
-  ],
+  time_zone_id: "Europe/Brussels",
+  time_zone_link_ids: ["Europe/Amsterdam", "Europe/Luxembourg"],
+
+  country: %{code: "BE", name: "Belgium", local_names: ["België", "Belgique"]},
+  coordinates: "+5050+00420",
+
+  zone_abbr: "CET",
+  dst_zone_abbr: "CEST",
+
   utc_offset: 3600,
-  zone_abbr: "WAT"
+  dst_offset: 7200,
+  utc_offset_identifier: "UTC+01:00",
+  dst_offset_identifier: "UTC+02:00",
+  pretty_utc_offset_identifier: "UTC+1",
+  pretty_dst_offset_identifier: "UTC+2"
 }
 ```
 
@@ -132,7 +133,7 @@ iex> TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
 import TzExtra.Changeset
 
 changeset
-|> validate_time_zone_identifier(:time_zone)
+|> validate_time_zone_identifier(:time_zone_id)
 ```
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
@@ -143,7 +144,7 @@ You may pass the option `:allow_alias` to allow time zone aliases, as well as th
 import TzExtra.Changeset
 
 changeset
-|> validate_civil_time_zone_identifier(:time_zone)
+|> validate_civil_time_zone_identifier(:time_zone_id)
 ```
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
