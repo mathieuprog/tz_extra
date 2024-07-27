@@ -163,6 +163,61 @@ defmodule TzExtra.Compiler do
           |> Enum.any?(&(&1 == time_zone_id))
         end
 
+        def earliest_datetime(%Date{} = date, %Time{} = time, time_zone) do
+          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
+            {:ambiguous, first, _second} ->
+              {:ok, first}
+
+            {:gap, just_before, _just_after} ->
+              {:ok, just_before}
+
+            ok_or_error_tuple ->
+              ok_or_error_tuple
+          end
+        end
+
+        def latest_datetime(%Date{} = date, %Time{} = time, time_zone) do
+          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
+            {:ambiguous, _first, second} ->
+              {:ok, second}
+
+            {:gap, _just_before, just_after} ->
+              {:ok, just_after}
+
+            ok_or_error_tuple ->
+              ok_or_error_tuple
+          end
+        end
+
+        def earliest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
+          case earliest_datetime(date, time, time_zone) do
+            {:ok, datetime} ->
+              datetime
+
+            {:error, _} ->
+              raise "invalid datetime"
+          end
+        end
+
+        def latest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
+          case latest_datetime(date, time, time_zone) do
+            {:ok, datetime} ->
+              datetime
+
+            {:error, _} ->
+              raise "invalid datetime"
+          end
+        end
+
+        def humanize_time_zone_id(time_zone_id) do
+          time_zone_id
+          |> String.split("/")
+          |> List.last()
+          |> String.split("_")
+          |> Enum.map(&String.capitalize/1)
+          |> Enum.join(" ")
+        end
+
         def country_time_zone(country_code_or_time_zone) do
           country_code_or_time_zone = to_string(country_code_or_time_zone)
 
@@ -221,53 +276,6 @@ defmodule TzExtra.Compiler do
 
             {:error, _} ->
               raise "no time zone data found for country #{country_code} and time zone ID #{time_zone_id}"
-          end
-        end
-      end,
-      quote do
-        def earliest_datetime(%Date{} = date, %Time{} = time, time_zone) do
-          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
-            {:ambiguous, first, _second} ->
-              {:ok, first}
-
-            {:gap, just_before, _just_after} ->
-              {:ok, just_before}
-
-            ok_or_error_tuple ->
-              ok_or_error_tuple
-          end
-        end
-
-        def latest_datetime(%Date{} = date, %Time{} = time, time_zone) do
-          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
-            {:ambiguous, _first, second} ->
-              {:ok, second}
-
-            {:gap, _just_before, just_after} ->
-              {:ok, just_after}
-
-            ok_or_error_tuple ->
-              ok_or_error_tuple
-          end
-        end
-
-        def earliest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
-          case earliest_datetime(date, time, time_zone) do
-            {:ok, datetime} ->
-              datetime
-
-            {:error, _} ->
-              raise "invalid datetime"
-          end
-        end
-
-        def latest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
-          case latest_datetime(date, time, time_zone) do
-            {:ok, datetime} ->
-              datetime
-
-            {:error, _} ->
-              raise "invalid datetime"
           end
         end
       end

@@ -9,6 +9,7 @@
 * `TzExtra.country_time_zone!/2`
 * [`TzExtra.time_zone_ids/1`](#tzextratime_zone_ids1): returns a list of time zone identifiers
 * `TzExtra.time_zone_id_exists?/1`
+* `TzExtra.humanize_time_zone_id/1`
 * [`TzExtra.civil_time_zone_ids/1`](#tzextracivil_time_zone_ids1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
 * [`TzExtra.canonical_time_zone_id/1`](#tzextracanonical_time_zone_id1): returns the canonical time zone identifier for the given time zone identifier
