@@ -158,6 +158,11 @@ defmodule TzExtra.Compiler do
           end
         end
 
+        def time_zone_id_exists?(time_zone_id) do
+          time_zone_ids(include_aliases: true)
+          |> Enum.any?(&(&1 == time_zone_id))
+        end
+
         def country_time_zone(country_code_or_time_zone) do
           country_code_or_time_zone = to_string(country_code_or_time_zone)
 

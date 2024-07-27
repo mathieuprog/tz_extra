@@ -52,6 +52,12 @@ defmodule TzExtraTest do
     assert TzExtra.iana_version() == Tz.iana_version()
   end
 
+  test "time_zone_id_exists?/1" do
+    assert TzExtra.time_zone_id_exists?("Europe/Brussels")
+    assert TzExtra.time_zone_id_exists?("Europe/Amsterdam")
+    refute TzExtra.time_zone_id_exists?("Asia/Amsterdam")
+  end
+
   test "earliest_datetime/2 and latest_datetime/2" do
     {:ambiguous, first_dt, second_dt} =
       DateTime.new(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
