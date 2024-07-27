@@ -2,36 +2,36 @@ if Code.ensure_loaded?(Ecto.Changeset) do
   defmodule TzExtra.Changeset do
     require TzExtra.Compiler
 
-    def validate_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ [])
+    def validate_time_zone_id(%Ecto.Changeset{} = changeset, field, opts \\ [])
         when is_atom(field) do
       opts =
         opts
         |> Keyword.put(:include_aliases, Keyword.get(opts, :allow_alias, false))
 
-      Ecto.Changeset.validate_change(changeset, field, :time_zone_identifier, fn _field, value ->
-        if Enum.member?(TzExtra.time_zone_identifiers(opts), value),
+      Ecto.Changeset.validate_change(changeset, field, :time_zone_id, fn _field, value ->
+        if Enum.member?(TzExtra.time_zone_ids(opts), value),
           do: [],
           else: [
             {field,
-             {message(opts, "is not a valid time zone"), [validation: :time_zone_identifier]}}
+             {message(opts, "is not a valid time zone"), [validation: :time_zone_id]}}
           ]
       end)
     end
 
-    def validate_civil_time_zone_identifier(%Ecto.Changeset{} = changeset, field, opts \\ [])
+    def validate_civil_time_zone_id(%Ecto.Changeset{} = changeset, field, opts \\ [])
         when is_atom(field) do
       opts =
         opts
         |> Keyword.put(:include_aliases, Keyword.get(opts, :allow_alias, false))
 
-      Ecto.Changeset.validate_change(changeset, field, :civil_time_zone_identifier, fn _field,
+      Ecto.Changeset.validate_change(changeset, field, :civil_time_zone_id, fn _field,
                                                                                        value ->
-        if Enum.member?(TzExtra.civil_time_zone_identifiers(opts), value),
+        if Enum.member?(TzExtra.civil_time_zone_ids(opts), value),
           do: [],
           else: [
             {field,
              {message(opts, "is not a valid time zone"),
-              [validation: :civil_time_zone_identifier]}}
+              [validation: :civil_time_zone_id]}}
           ]
       end)
     end

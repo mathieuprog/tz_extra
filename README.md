@@ -5,12 +5,12 @@
 * [`TzExtra.countries_time_zones/0`](#tzextracountries_time_zones0): returns a list of time zone data by country
 * [`TzExtra.CountryTimeZone.for_country_code/1`](#tzextracountrytimezonefor_country_code1): returns a list of time zone data for a given country
 * [`TzExtra.CountryTimeZone.for_time_zone/1`](#tzextracountrytimezonefor_time_zone1): returns a list of time zone data for a time zone
-* [`TzExtra.time_zone_identifiers/1`](#tzextratime_zone_identifiers1): returns a list of time zone identifiers
-* [`TzExtra.civil_time_zone_identifiers/1`](#tzextracivil_time_zone_identifiers1): returns a list of time zone identifiers that are tied to a country
+* [`TzExtra.time_zone_ids/1`](#tzextratime_zone_ids1): returns a list of time zone identifiers
+* [`TzExtra.civil_time_zone_ids/1`](#tzextracivil_time_zone_ids1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
-* [`TzExtra.get_canonical_time_zone_identifier/1`](#tzextraget_canonical_time_zone_identifier1): returns the canonical time zone identifier for the given time zone identifier
-* [`TzExtra.Changeset.validate_time_zone_identifier/3`](#tzextraChangesetvalidate_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid time zone
-* [`TzExtra.Changeset.validate_civil_time_zone_identifier/3`](#tzextraChangesetvalidate_civil_time_zone_identifier3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
+* [`TzExtra.get_canonical_time_zone_id/1`](#tzextraget_canonical_time_zone_id1): returns the canonical time zone identifier for the given time zone identifier
+* [`TzExtra.Changeset.validate_time_zone_id/3`](#tzextraChangesetvalidate_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid time zone
+* [`TzExtra.Changeset.validate_civil_time_zone_id/3`](#tzextraChangesetvalidate_civil_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
 
 ### `TzExtra.countries_time_zones/0`
@@ -36,10 +36,10 @@ iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
 
   utc_to_std_offset: 3600,
   utc_to_dst_offset: 7200,
-  utc_to_std_offset_identifier: "UTC+01:00",
-  utc_to_dst_offset_identifier: "UTC+02:00",
-  pretty_utc_to_std_offset_identifier: "UTC+1",
-  pretty_utc_to_dst_offset_identifier: "UTC+2"
+  utc_to_std_offset_id: "UTC+01:00",
+  utc_to_dst_offset_id: "UTC+02:00",
+  pretty_utc_to_std_offset_id: "UTC+1",
+  pretty_utc_to_dst_offset_id: "UTC+2"
 }
 ```
 
@@ -56,10 +56,10 @@ Returns a list of time zone data for the given time zone.
 
 You may also call `TzExtra.country_time_zone/1` which takes a country code or a time zone as argument.
 
-### `TzExtra.time_zone_identifiers/1`
+### `TzExtra.time_zone_ids/1`
 
 ```elixir
-iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
+iex> TzExtra.time_zone_ids() |> Enum.take(5)
 ```
 
 ```elixir
@@ -74,10 +74,10 @@ iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
 
 This function can take an option `:include_aliases` (by default set to `false`) to include time zone aliases. By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases.
 
-### `TzExtra.civil_time_zone_identifiers/1`
+### `TzExtra.civil_time_zone_ids/1`
 
 ```elixir
-iex> TzExtra.civil_time_zone_identifiers()
+iex> TzExtra.civil_time_zone_ids()
 ```
 
 This function returns only the time zone identifiers attached to a country. It takes two options:
@@ -100,14 +100,14 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
-### `TzExtra.get_canonical_time_zone_identifier/1`
+### `TzExtra.get_canonical_time_zone_id/1`
 
 Returns the canonical time zone identifier for the given time zone identifier.
 
 If you pass a canonical time zone identifier, the same identifier will be returned.
 
 ```elixir
-iex> TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
+iex> TzExtra.get_canonical_time_zone_id("Asia/Phnom_Penh")
 ```
 
 ```elixir
@@ -115,31 +115,31 @@ iex> TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
 ```
 
 ```elixir
-iex> TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
+iex> TzExtra.get_canonical_time_zone_id("Asia/Bangkok")
 ```
 
 ```elixir
 "Asia/Bangkok"
 ```
 
-### `TzExtra.Changeset.validate_time_zone_identifier/3`
+### `TzExtra.Changeset.validate_time_zone_id/3`
 
 ```elixir
 import TzExtra.Changeset
 
 changeset
-|> validate_time_zone_identifier(:time_zone_id)
+|> validate_time_zone_id(:time_zone_id)
 ```
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.
 
-### `TzExtra.Changeset.validate_civil_time_zone_identifier/3`
+### `TzExtra.Changeset.validate_civil_time_zone_id/3`
 
 ```elixir
 import TzExtra.Changeset
 
 changeset
-|> validate_civil_time_zone_identifier(:time_zone_id)
+|> validate_civil_time_zone_id(:time_zone_id)
 ```
 
 You may pass the option `:allow_alias` to allow time zone aliases, as well as the `:message` option to customize the error message.

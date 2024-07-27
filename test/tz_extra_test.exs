@@ -17,34 +17,34 @@ defmodule TzExtraTest do
     refute TzExtra.countries_time_zones() |> Enum.any?(&(&1.time_zone_id == "Etc/UTC"))
   end
 
-  test "time_zone_identifiers/1" do
-    assert is_list(TzExtra.time_zone_identifiers())
+  test "time_zone_ids/1" do
+    assert is_list(TzExtra.time_zone_ids())
 
-    refute TzExtra.civil_time_zone_identifiers() |> Enum.any?(&(&1 == "Etc/UTC"))
+    refute TzExtra.civil_time_zone_ids() |> Enum.any?(&(&1 == "Etc/UTC"))
 
-    assert TzExtra.civil_time_zone_identifiers(include_aliases: true)
+    assert TzExtra.civil_time_zone_ids(include_aliases: true)
            |> Enum.any?(&(&1 == "America/Guadeloupe"))
 
-    refute TzExtra.civil_time_zone_identifiers(include_aliases: false)
+    refute TzExtra.civil_time_zone_ids(include_aliases: false)
            |> Enum.any?(&(&1 == "America/Guadeloupe"))
 
-    refute TzExtra.civil_time_zone_identifiers() |> Enum.any?(&(&1 == "America/Guadeloupe"))
+    refute TzExtra.civil_time_zone_ids() |> Enum.any?(&(&1 == "America/Guadeloupe"))
 
-    assert TzExtra.time_zone_identifiers(include_aliases: true)
+    assert TzExtra.time_zone_ids(include_aliases: true)
            |> Enum.any?(&(&1 == "America/Guadeloupe"))
 
-    refute TzExtra.time_zone_identifiers(include_aliases: false)
+    refute TzExtra.time_zone_ids(include_aliases: false)
            |> Enum.any?(&(&1 == "America/Guadeloupe"))
 
-    refute TzExtra.time_zone_identifiers() |> Enum.any?(&(&1 == "America/Guadeloupe"))
+    refute TzExtra.time_zone_ids() |> Enum.any?(&(&1 == "America/Guadeloupe"))
   end
 
-  test "get_canonical_time_zone_identifier/1" do
-    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_identifier("Asia/Phnom_Penh")
-    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_identifier("Asia/Bangkok")
+  test "get_canonical_time_zone_id/1" do
+    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_id("Asia/Phnom_Penh")
+    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_id("Asia/Bangkok")
 
     assert_raise RuntimeError, "time zone identifier \"foo\" not found", fn ->
-      TzExtra.get_canonical_time_zone_identifier("foo")
+      TzExtra.get_canonical_time_zone_id("foo")
     end
   end
 
