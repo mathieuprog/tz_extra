@@ -130,7 +130,7 @@ defmodule TzExtra.Compiler do
           unquote(Tz.iana_version())
         end
 
-        def get_canonical_time_zone_id(time_zone_id) do
+        def canonical_time_zone_id(time_zone_id) do
           unquote(Macro.escape(link_canonical_map))[time_zone_id] ||
             raise "time zone identifier \"#{time_zone_id}\" not found"
         end
@@ -180,7 +180,7 @@ defmodule TzExtra.Compiler do
 
         quote do
           def country_time_zone(unquote(country_code), time_zone_id) do
-            canonical_time_zone = get_canonical_time_zone_id(time_zone_id)
+            canonical_time_zone = canonical_time_zone_id(time_zone_id)
 
             country_time_zone = Enum.find(unquote(Macro.escape(time_zones_for_country)), & &1.time_zone_id == canonical_time_zone)
 

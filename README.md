@@ -8,7 +8,7 @@
 * [`TzExtra.time_zone_ids/1`](#tzextratime_zone_ids1): returns a list of time zone identifiers
 * [`TzExtra.civil_time_zone_ids/1`](#tzextracivil_time_zone_ids1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
-* [`TzExtra.get_canonical_time_zone_id/1`](#tzextraget_canonical_time_zone_id1): returns the canonical time zone identifier for the given time zone identifier
+* [`TzExtra.canonical_time_zone_id/1`](#tzextracanonical_time_zone_id1): returns the canonical time zone identifier for the given time zone identifier
 * [`TzExtra.Changeset.validate_time_zone_id/3`](#tzextraChangesetvalidate_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid time zone
 * [`TzExtra.Changeset.validate_civil_time_zone_id/3`](#tzextraChangesetvalidate_civil_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
@@ -100,14 +100,14 @@ iex> TzExtra.countries() |> Enum.take(5)
 ]
 ```
 
-### `TzExtra.get_canonical_time_zone_id/1`
+### `TzExtra.canonical_time_zone_id/1`
 
 Returns the canonical time zone identifier for the given time zone identifier.
 
 If you pass a canonical time zone identifier, the same identifier will be returned.
 
 ```elixir
-iex> TzExtra.get_canonical_time_zone_id("Asia/Phnom_Penh")
+iex> TzExtra.canonical_time_zone_id("Asia/Phnom_Penh")
 ```
 
 ```elixir
@@ -115,7 +115,7 @@ iex> TzExtra.get_canonical_time_zone_id("Asia/Phnom_Penh")
 ```
 
 ```elixir
-iex> TzExtra.get_canonical_time_zone_id("Asia/Bangkok")
+iex> TzExtra.canonical_time_zone_id("Asia/Bangkok")
 ```
 
 ```elixir

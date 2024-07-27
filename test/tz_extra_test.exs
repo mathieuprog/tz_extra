@@ -39,12 +39,12 @@ defmodule TzExtraTest do
     refute TzExtra.time_zone_ids() |> Enum.any?(&(&1 == "America/Guadeloupe"))
   end
 
-  test "get_canonical_time_zone_id/1" do
-    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_id("Asia/Phnom_Penh")
-    assert "Asia/Bangkok" == TzExtra.get_canonical_time_zone_id("Asia/Bangkok")
+  test "canonical_time_zone_id/1" do
+    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id("Asia/Phnom_Penh")
+    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id("Asia/Bangkok")
 
     assert_raise RuntimeError, "time zone identifier \"foo\" not found", fn ->
-      TzExtra.get_canonical_time_zone_id("foo")
+      TzExtra.canonical_time_zone_id("foo")
     end
   end
 
