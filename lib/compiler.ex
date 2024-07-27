@@ -43,7 +43,7 @@ defmodule TzExtra.Compiler do
       |> add_offset_data()
       |> localize_country_name()
       |> Enum.sort_by(
-        &{&1.country && normalize_string(&1.country.name), &1.utc_offset, &1.time_zone_id}
+        &{&1.country && normalize_string(&1.country.name), &1.utc_to_std_offset, &1.time_zone_id}
       )
 
     civil_time_zones =
@@ -212,13 +212,13 @@ defmodule TzExtra.Compiler do
     Enum.map(time_zones, fn %{time_zone_id: time_zone_id} = time_zone ->
       {:ok, periods} = Tz.PeriodsProvider.periods(time_zone_id)
 
-      {utc_offset, dst_offset, zone_abbr, dst_zone_abbr} =
+      {utc_to_std_offset, utc_to_dst_offset, zone_abbr, dst_zone_abbr} =
         case hd(periods) do
           {_, {utc_offset, std_offset, zone_abbr}, _, nil} ->
             {utc_offset, utc_offset + std_offset, zone_abbr, zone_abbr}
 
           {_, {utc_offset, std_offset, zone_abbr}, {_, prev_std_offset, prev_zone_abbr}, _} ->
-            dst_offset = utc_offset + max(std_offset, prev_std_offset)
+            utc_to_dst_offset = utc_offset + max(std_offset, prev_std_offset)
 
             {zone_abbr, dst_zone_abbr} =
               cond do
@@ -229,16 +229,16 @@ defmodule TzExtra.Compiler do
                   {prev_zone_abbr, zone_abbr}
               end
 
-            {utc_offset, dst_offset, zone_abbr, dst_zone_abbr}
+            {utc_offset, utc_to_dst_offset, zone_abbr, dst_zone_abbr}
         end
 
       time_zone
-      |> Map.put(:utc_offset, utc_offset)
-      |> Map.put(:dst_offset, dst_offset)
-      |> Map.put(:utc_offset_identifier, "UTC" <> offset_to_string(utc_offset, :standard))
-      |> Map.put(:dst_offset_identifier, "UTC" <> offset_to_string(dst_offset, :standard))
-      |> Map.put(:pretty_utc_offset_identifier, "UTC" <> offset_to_string(utc_offset, :pretty))
-      |> Map.put(:pretty_dst_offset_identifier, "UTC" <> offset_to_string(dst_offset, :pretty))
+      |> Map.put(:utc_to_std_offset, utc_to_std_offset)
+      |> Map.put(:utc_to_dst_offset, utc_to_dst_offset)
+      |> Map.put(:utc_to_std_offset_identifier, "UTC" <> offset_to_string(utc_to_std_offset, :standard))
+      |> Map.put(:utc_to_dst_offset_identifier, "UTC" <> offset_to_string(utc_to_dst_offset, :standard))
+      |> Map.put(:pretty_utc_to_std_offset_identifier, "UTC" <> offset_to_string(utc_to_std_offset, :pretty))
+      |> Map.put(:pretty_utc_to_dst_offset_identifier, "UTC" <> offset_to_string(utc_to_dst_offset, :pretty))
       |> Map.put(:zone_abbr, zone_abbr)
       |> Map.put(:dst_zone_abbr, dst_zone_abbr)
     end)

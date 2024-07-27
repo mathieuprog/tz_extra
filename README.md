@@ -34,12 +34,12 @@ iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
   zone_abbr: "CET",
   dst_zone_abbr: "CEST",
 
-  utc_offset: 3600,
-  dst_offset: 7200,
-  utc_offset_identifier: "UTC+01:00",
-  dst_offset_identifier: "UTC+02:00",
-  pretty_utc_offset_identifier: "UTC+1",
-  pretty_dst_offset_identifier: "UTC+2"
+  utc_to_std_offset: 3600,
+  utc_to_dst_offset: 7200,
+  utc_to_std_offset_identifier: "UTC+01:00",
+  utc_to_dst_offset_identifier: "UTC+02:00",
+  pretty_utc_to_std_offset_identifier: "UTC+1",
+  pretty_utc_to_dst_offset_identifier: "UTC+2"
 }
 ```
 
