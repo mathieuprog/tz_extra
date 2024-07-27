@@ -208,6 +208,53 @@ defmodule TzExtra.Compiler do
         def country_time_zone(_, _) do
           {:error, :country_not_found}
         end
+      end,
+      quote do
+        def earliest_datetime(%Date{} = date, %Time{} = time, time_zone) do
+          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
+            {:ambiguous, first, _second} ->
+              {:ok, first}
+
+            {:gap, just_before, _just_after} ->
+              {:ok, just_before}
+
+            ok_or_error_tuple ->
+              ok_or_error_tuple
+          end
+        end
+
+        def latest_datetime(%Date{} = date, %Time{} = time, time_zone) do
+          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
+            {:ambiguous, _first, second} ->
+              {:ok, second}
+
+            {:gap, _just_before, just_after} ->
+              {:ok, just_after}
+
+            ok_or_error_tuple ->
+              ok_or_error_tuple
+          end
+        end
+
+        def earliest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
+          case earliest_datetime(date, time, time_zone) do
+            {:ok, datetime} ->
+              datetime
+
+            {:error, _} ->
+              raise "invalid datetime"
+          end
+        end
+
+        def latest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
+          case latest_datetime(date, time, time_zone) do
+            {:ok, datetime} ->
+              datetime
+
+            {:error, _} ->
+              raise "invalid datetime"
+          end
+        end
       end
     ]
 
