@@ -83,7 +83,10 @@ defmodule TzExtra.Compiler do
           canonical_time_zone = unquote(Macro.escape(link_canonical_map))[link_time_zone]
 
           countries_time_zones_for_link =
-            Enum.filter(unquote(Macro.escape(countries_time_zones)), &(&1.time_zone_id == canonical_time_zone))
+            Enum.filter(
+              unquote(Macro.escape(countries_time_zones)),
+              &(&1.time_zone_id == canonical_time_zone)
+            )
 
           if countries_time_zones_for_link do
             {:ok, countries_time_zones_for_link}
@@ -174,7 +177,8 @@ defmodule TzExtra.Compiler do
         end
       end,
       for %{code: country_code} <- countries do
-        {:ok, time_zones_for_country} = :"Elixir.TzExtra.CountryTimeZone".for_country_code(country_code)
+        {:ok, time_zones_for_country} =
+          :"Elixir.TzExtra.CountryTimeZone".for_country_code(country_code)
 
         country_code_atom = String.to_atom(country_code)
 
@@ -182,7 +186,11 @@ defmodule TzExtra.Compiler do
           def country_time_zone(unquote(country_code), time_zone_id) do
             canonical_time_zone = canonical_time_zone_id(time_zone_id)
 
-            country_time_zone = Enum.find(unquote(Macro.escape(time_zones_for_country)), & &1.time_zone_id == canonical_time_zone)
+            country_time_zone =
+              Enum.find(
+                unquote(Macro.escape(time_zones_for_country)),
+                &(&1.time_zone_id == canonical_time_zone)
+              )
 
             if country_time_zone do
               {:ok, country_time_zone}
@@ -237,8 +245,14 @@ defmodule TzExtra.Compiler do
       |> Map.put(:utc_to_dst_offset, utc_to_dst_offset)
       |> Map.put(:utc_to_std_offset_id, "UTC" <> offset_to_string(utc_to_std_offset, :standard))
       |> Map.put(:utc_to_dst_offset_id, "UTC" <> offset_to_string(utc_to_dst_offset, :standard))
-      |> Map.put(:pretty_utc_to_std_offset_id, "UTC" <> offset_to_string(utc_to_std_offset, :pretty))
-      |> Map.put(:pretty_utc_to_dst_offset_id, "UTC" <> offset_to_string(utc_to_dst_offset, :pretty))
+      |> Map.put(
+        :pretty_utc_to_std_offset_id,
+        "UTC" <> offset_to_string(utc_to_std_offset, :pretty)
+      )
+      |> Map.put(
+        :pretty_utc_to_dst_offset_id,
+        "UTC" <> offset_to_string(utc_to_dst_offset, :pretty)
+      )
       |> Map.put(:zone_abbr, zone_abbr)
       |> Map.put(:dst_zone_abbr, dst_zone_abbr)
     end)

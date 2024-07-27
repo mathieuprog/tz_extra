@@ -12,7 +12,9 @@ defmodule TzExtra.Helper do
   end
 
   defp do_offset_to_string({h, m, 0}, :standard), do: :io_lib.format("~2..0B:~2..0B", [h, m])
-  defp do_offset_to_string({h, m, s}, :standard), do: :io_lib.format("~2..0B:~2..0B:~2..0B", [h, m, s])
+
+  defp do_offset_to_string({h, m, s}, :standard),
+    do: :io_lib.format("~2..0B:~2..0B:~2..0B", [h, m, s])
 
   defp do_offset_to_string({h, 0, 0}, :pretty), do: :io_lib.format("~B", [h])
   defp do_offset_to_string({h, m, 0}, :pretty), do: :io_lib.format("~B:~2..0B", [h, m])

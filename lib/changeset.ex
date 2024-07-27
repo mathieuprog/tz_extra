@@ -12,8 +12,7 @@ if Code.ensure_loaded?(Ecto.Changeset) do
         if Enum.member?(TzExtra.time_zone_ids(opts), value),
           do: [],
           else: [
-            {field,
-             {message(opts, "is not a valid time zone"), [validation: :time_zone_id]}}
+            {field, {message(opts, "is not a valid time zone"), [validation: :time_zone_id]}}
           ]
       end)
     end
@@ -24,14 +23,12 @@ if Code.ensure_loaded?(Ecto.Changeset) do
         opts
         |> Keyword.put(:include_aliases, Keyword.get(opts, :allow_alias, false))
 
-      Ecto.Changeset.validate_change(changeset, field, :civil_time_zone_id, fn _field,
-                                                                                       value ->
+      Ecto.Changeset.validate_change(changeset, field, :civil_time_zone_id, fn _field, value ->
         if Enum.member?(TzExtra.civil_time_zone_ids(opts), value),
           do: [],
           else: [
             {field,
-             {message(opts, "is not a valid time zone"),
-              [validation: :civil_time_zone_id]}}
+             {message(opts, "is not a valid time zone"), [validation: :civil_time_zone_id]}}
           ]
       end)
     end
