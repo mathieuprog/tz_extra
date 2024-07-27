@@ -208,6 +208,16 @@ defmodule TzExtra.Compiler do
         def country_time_zone(_, _) do
           {:error, :country_not_found}
         end
+
+        def country_time_zone!(country_code, time_zone_id) do
+          case country_time_zone(country_code, time_zone_id) do
+            {:ok, country_time_zone} ->
+              country_time_zone
+
+            {:error, _} ->
+              raise "no time zone data found for country #{country_code} and time zone ID #{time_zone_id}"
+          end
+        end
       end,
       quote do
         def earliest_datetime(%Date{} = date, %Time{} = time, time_zone) do
