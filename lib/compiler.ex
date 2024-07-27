@@ -163,49 +163,46 @@ defmodule TzExtra.Compiler do
           |> Enum.any?(&(&1 == time_zone_id))
         end
 
-        def earliest_datetime(%Date{} = date, %Time{} = time, time_zone) do
+        def round_datetime(%DateTime{} = datetime, step_in_seconds, mode)
+            when mode in [:floor, :ceil] do
+          utc_datetime = DateTime.to_unix(datetime, :second)
+
+          rounded_unix_time =
+            case mode do
+              :floor ->
+                div(utc_datetime, step_in_seconds) * step_in_seconds
+
+              :ceil ->
+                div(utc_datetime + step_in_seconds - 1, step_in_seconds) * step_in_seconds
+            end
+
+          rounded_datetime = DateTime.from_unix!(rounded_unix_time)
+
+          DateTime.shift_zone!(rounded_datetime, datetime.time_zone)
+        end
+
+        def new_resolved_datetime!(%Date{} = date, %Time{} = time, time_zone, opts) do
+          ambiguous = Keyword.fetch!(opts, :ambiguous)
+          gap = Keyword.fetch!(opts, :gap)
+
           case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
-            {:ambiguous, first, _second} ->
-              {:ok, first}
+            {:ok, dt} ->
+              dt
 
-            {:gap, just_before, _just_after} ->
-              {:ok, just_before}
+            {:error, :time_zone_not_found} ->
+              raise "time zone not found"
 
-            ok_or_error_tuple ->
-              ok_or_error_tuple
-          end
-        end
+            {:ambiguous, first, second} ->
+              case ambiguous do
+                :first -> first
+                :second -> second
+              end
 
-        def latest_datetime(%Date{} = date, %Time{} = time, time_zone) do
-          case DateTime.new(date, time, time_zone, Tz.TimeZoneDatabase) do
-            {:ambiguous, _first, second} ->
-              {:ok, second}
-
-            {:gap, _just_before, just_after} ->
-              {:ok, just_after}
-
-            ok_or_error_tuple ->
-              ok_or_error_tuple
-          end
-        end
-
-        def earliest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
-          case earliest_datetime(date, time, time_zone) do
-            {:ok, datetime} ->
-              datetime
-
-            {:error, _} ->
-              raise "invalid datetime"
-          end
-        end
-
-        def latest_datetime!(%Date{} = date, %Time{} = time, time_zone) do
-          case latest_datetime(date, time, time_zone) do
-            {:ok, datetime} ->
-              datetime
-
-            {:error, _} ->
-              raise "invalid datetime"
+            {:gap, just_before, just_after} ->
+              case gap do
+                :just_before -> just_before
+                :just_after -> just_after
+              end
           end
         end
 
@@ -234,6 +231,13 @@ defmodule TzExtra.Compiler do
 
         def countries() do
           unquote(Macro.escape(countries))
+        end
+
+        def utc_datetime_range(%DateTime{} = start_dt, %DateTime{} = end_dt, step_in_seconds) do
+          start_unix_time = DateTime.to_unix(start_dt, :second)
+          end_unix_time = DateTime.to_unix(end_dt, :second)
+
+          Enum.map(start_unix_time..end_unix_time//step_in_seconds, &DateTime.from_unix!(&1))
         end
       end,
       for %{code: country_code} <- countries do
