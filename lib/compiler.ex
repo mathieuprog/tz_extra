@@ -54,7 +54,7 @@ defmodule TzExtra.Compiler do
 
     civil_time_zones_with_links =
       countries_time_zones
-      |> Enum.map(&[&1.time_zone_id | &1.time_zone_link_ids])
+      |> Enum.map(&[&1.time_zone_id | &1.time_zone_alias_ids])
       |> List.flatten()
       |> Enum.uniq()
       |> Enum.sort()
@@ -248,7 +248,7 @@ defmodule TzExtra.Compiler do
     Enum.map(countries_time_zones, fn %{time_zone_id: time_zone_id} = time_zone ->
       Map.put(
         time_zone,
-        :time_zone_link_ids,
+        :time_zone_alias_ids,
         get_time_zone_links_for_canonical_fun.(time_zone_id)
       )
     end)

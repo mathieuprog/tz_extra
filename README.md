@@ -15,12 +15,7 @@
 
 ### `TzExtra.countries_time_zones/0`
 
-Returns a list of time zone data by country. The data includes:
-* the country and time zone;
-* the current UTC and DST offsets observed;
-* the links (other city names) linking to the time zone;
-* the zone abbreviation;
-* the coordinates.
+Returns a list of time zone data by country.
 
 #### Example
 
@@ -31,7 +26,7 @@ iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
 ```elixir
 %{
   time_zone_id: "Europe/Brussels",
-  time_zone_link_ids: ["Europe/Amsterdam", "Europe/Luxembourg"],
+  time_zone_alias_ids: ["Europe/Amsterdam", "Europe/Luxembourg"],
 
   country: %{code: "BE", name: "Belgium", local_names: ["België", "Belgique"]},
   coordinates: "+5050+00420",
@@ -48,8 +43,8 @@ iex> TzExtra.countries_time_zones() |> Enum.find(& &1.country.code == "BE")
 }
 ```
 
-Note that a time zone may be observed by multiple countries. For example, the tz database version `2019c` lists 10
-countries observing the time zone `Africa/Lagos`; this will result in 10 map entries for that time zone.
+Note that a time zone may be observed by multiple countries. For example, the tz database version `2024a` lists 10
+countries observing the time zone `"Africa/Lagos"`; this will result in 10 map entries for that time zone.
 
 ### `TzExtra.CountryTimeZone.for_country_code/1`
 
@@ -70,14 +65,14 @@ iex> TzExtra.time_zone_identifiers() |> Enum.take(5)
 ```elixir
 [
   "Africa/Abidjan",
-  "Africa/Accra",
   "Africa/Algiers",
   "Africa/Bissau",
-  "Africa/Cairo"
+  "Africa/Cairo",
+  "Africa/Casablanca"
 ]
 ```
 
-This function can take an option `:include_aliases` (by default set to `false`) to include time zone aliases. By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases (also called links).
+This function can take an option `:include_aliases` (by default set to `false`) to include time zone aliases. By default, only canonical time zones are returned. Set this option to `true` to include time zone aliases.
 
 ### `TzExtra.civil_time_zone_identifiers/1`
 
@@ -87,7 +82,7 @@ iex> TzExtra.civil_time_zone_identifiers()
 
 This function returns only the time zone identifiers attached to a country. It takes two options:
 * `:include_aliases` (by default set to `false`)
-  By default, only canonical time zones are returned. Set this option to `false` to include time zone aliases (also called links).
+  By default, only canonical time zones are returned. Set this option to `false` to include time zone aliases.
 
 ### `TzExtra.countries/0`
 
