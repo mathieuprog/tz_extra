@@ -12,6 +12,10 @@
 * [`TzExtra.Changeset.validate_time_zone_id/3`](#tzextraChangesetvalidate_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid time zone
 * [`TzExtra.Changeset.validate_civil_time_zone_id/3`](#tzextraChangesetvalidate_civil_time_zone_id3): an Ecto Changeset validator, validating that the user input is a valid civil time zone
 * [`TzExtra.Changeset.validate_iso_country_code/3`](#tzextraChangesetvalidate_iso_country_code3): an Ecto Changeset validator, validating that the user input is a valid ISO country code
+* `TzExtra.earliest_datetime/3`: returns the earliest date time for a given date and time (if gap, returns date time just before gap and if ambiguous, returns first date time)
+* `TzExtra.latest_datetime/3`: returns the latest date time for a given date and time (if gap, returns date time just after gap and if ambiguous, returns second date time)
+* `TzExtra.earliest_datetime!/3`
+* `TzExtra.latest_datetime!/3`
 
 ### `TzExtra.countries_time_zones/0`
 
