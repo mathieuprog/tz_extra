@@ -53,14 +53,22 @@ defmodule TzExtraTest do
   end
 
   test "earliest_datetime/2 and latest_datetime/2" do
-    {:ambiguous, first_dt, second_dt} = DateTime.new(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
-    earliest_datetime = TzExtra.earliest_datetime!(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen")
+    {:ambiguous, first_dt, second_dt} =
+      DateTime.new(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+
+    earliest_datetime =
+      TzExtra.earliest_datetime!(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen")
+
     latest_datetime = TzExtra.latest_datetime!(~D[2018-10-28], ~T[02:30:00], "Europe/Copenhagen")
     assert DateTime.compare(earliest_datetime, first_dt) == :eq
     assert DateTime.compare(latest_datetime, second_dt) == :eq
 
-    {:gap, just_before, just_after} = DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
-    earliest_datetime = TzExtra.earliest_datetime!(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen")
+    {:gap, just_before, just_after} =
+      DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+
+    earliest_datetime =
+      TzExtra.earliest_datetime!(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen")
+
     latest_datetime = TzExtra.latest_datetime!(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen")
     assert DateTime.compare(earliest_datetime, just_before) == :eq
     assert DateTime.compare(latest_datetime, just_after) == :eq
