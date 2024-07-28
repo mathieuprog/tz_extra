@@ -15,6 +15,16 @@ defmodule TzExtraTest do
              |> Enum.count()
 
     refute TzExtra.countries_time_zones() |> Enum.any?(&(&1.time_zone_id == "Etc/UTC"))
+
+    country_time_zone = TzExtra.country_time_zone!("MA", "Africa/Casablanca")
+
+    assert country_time_zone.utc_to_std_offset == 0
+    assert country_time_zone.utc_to_dst_offset == 3600
+
+    country_time_zone = TzExtra.country_time_zone!("IE", "Europe/Dublin")
+
+    assert country_time_zone.utc_to_std_offset == 0
+    assert country_time_zone.utc_to_dst_offset == 3600
   end
 
   test "time_zone_ids/1" do

@@ -293,11 +293,33 @@ defmodule TzExtra.Compiler do
 
       {utc_to_std_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr} =
         case hd(periods) do
-          {_, {utc_offset, std_offset, time_zone_abbr}, _, nil} ->
-            {utc_offset, utc_offset + std_offset, time_zone_abbr, time_zone_abbr}
+          {utc_secs, {utc_to_std_offset, std_offset, time_zone_abbr},
+           {_, prev_std_offset, prev_zone_abbr}, nil} ->
+            hardcoded_dst_future_periods? =
+              DateTime.from_gregorian_seconds(utc_secs).year > Date.utc_today().year + 20
 
-          {_, {utc_offset, std_offset, time_zone_abbr}, {_, prev_std_offset, prev_zone_abbr}, _} ->
-            utc_to_dst_offset = utc_offset + max(std_offset, prev_std_offset)
+            if hardcoded_dst_future_periods? do
+              utc_to_dst_offset = utc_to_std_offset + max(std_offset, prev_std_offset)
+              utc_to_std_offset = utc_to_std_offset + min(std_offset, prev_std_offset)
+
+              {time_zone_abbr, dst_time_zone_abbr} =
+                cond do
+                  std_offset < prev_std_offset ->
+                    {time_zone_abbr, prev_zone_abbr}
+
+                  std_offset > prev_std_offset ->
+                    {prev_zone_abbr, time_zone_abbr}
+                end
+
+              {utc_to_std_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr}
+            else
+              {utc_to_std_offset, utc_to_std_offset + std_offset, time_zone_abbr, time_zone_abbr}
+            end
+
+          {_, {utc_to_std_offset, std_offset, time_zone_abbr},
+           {_, prev_std_offset, prev_zone_abbr}, _} ->
+            utc_to_dst_offset = utc_to_std_offset + max(std_offset, prev_std_offset)
+            utc_to_std_offset = utc_to_std_offset + min(std_offset, prev_std_offset)
 
             {time_zone_abbr, dst_time_zone_abbr} =
               cond do
@@ -308,7 +330,7 @@ defmodule TzExtra.Compiler do
                   {prev_zone_abbr, time_zone_abbr}
               end
 
-            {utc_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr}
+            {utc_to_std_offset, utc_to_dst_offset, time_zone_abbr, dst_time_zone_abbr}
         end
 
       time_zone
