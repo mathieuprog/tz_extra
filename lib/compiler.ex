@@ -80,24 +80,21 @@ defmodule TzExtra.Compiler do
       end,
       quote do
         def for_time_zone(link_time_zone) do
-          canonical_time_zone = unquote(Macro.escape(link_canonical_map))[link_time_zone]
+          if canonical_time_zone = unquote(Macro.escape(link_canonical_map))[link_time_zone] do
+            countries_time_zones_for_link =
+              Enum.filter(
+                unquote(Macro.escape(countries_time_zones)),
+                &(&1.time_zone_id == canonical_time_zone)
+              )
 
-          countries_time_zones_for_link =
-            Enum.filter(
-              unquote(Macro.escape(countries_time_zones)),
-              &(&1.time_zone_id == canonical_time_zone)
-            )
-
-          if countries_time_zones_for_link do
-            {:ok, countries_time_zones_for_link}
+            if countries_time_zones_for_link do
+              {:ok, countries_time_zones_for_link}
+            else
+              {:error, :time_zone_not_linked_to_country}
+            end
           else
-            {:error, :time_zone_not_linked_to_country}
+            {:error, :time_zone_not_found}
           end
-        end
-      end,
-      quote do
-        def for_time_zone(_) do
-          {:error, :time_zone_not_found}
         end
       end,
       for %{code: country_code} <- countries do
