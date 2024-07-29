@@ -19,7 +19,8 @@
 * `TzExtra.new_resolved_datetime!/4`
 * `TzExtra.utc_datetime_range/3`
 * `TzExtra.round_datetime/3`
-* `TzExtra.advances_clock?/1`
+* `TzExtra.shifts_clock?/1`
+* `TzExtra.clock_shift/2`
 * `TzExtra.next_period_start_in_year_span/1`
 
 ### `TzExtra.countries_time_zones/0`

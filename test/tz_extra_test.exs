@@ -62,22 +62,43 @@ defmodule TzExtraTest do
     assert TzExtra.iana_version() == Tz.iana_version()
   end
 
-  test "advances_clock?/1" do
-    assert TzExtra.advances_clock?("Europe/Brussels")
-    assert TzExtra.advances_clock?("Africa/Casablanca")
+  test "shifts_clock?/1" do
+    assert TzExtra.shifts_clock?("Europe/Brussels")
+    assert TzExtra.shifts_clock?("Africa/Casablanca")
 
-    refute TzExtra.advances_clock?("Asia/Manila")
-    refute TzExtra.advances_clock?("Asia/Tokyo")
+    refute TzExtra.shifts_clock?("Asia/Manila")
+    refute TzExtra.shifts_clock?("Asia/Tokyo")
   end
 
-  test "next_period_start_in_year_span/1" do
-    {:ambiguous, first_dt, second_dt} = DateTime.new(~D[2018-10-28], ~T[02:00:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
-    dt = TzExtra.next_period_start_in_year_span(DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase))
+  test "next_period_start_in_year_span/1 and clock_shift/2" do
+    {:ambiguous, first_dt, second_dt} =
+      DateTime.new(~D[2018-10-28], ~T[02:00:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+
+    dt =
+      TzExtra.next_period_start_in_year_span(
+        DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase)
+      )
+
     assert DateTime.compare(dt, second_dt) == :eq
 
-    {:gap, dt_just_before, dt_just_after} = DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
-    dt = TzExtra.next_period_start_in_year_span(DateTime.add(dt_just_before, -1, :day, Tz.TimeZoneDatabase))
+    assert TzExtra.clock_shift(first_dt, second_dt) == :backward
+    assert TzExtra.clock_shift(first_dt, first_dt) == :no_shift
+
+    {:gap, dt_just_before, dt_just_after} =
+      DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+
+    dt =
+      TzExtra.next_period_start_in_year_span(
+        DateTime.add(dt_just_before, -1, :day, Tz.TimeZoneDatabase)
+      )
+
     assert DateTime.compare(dt, dt_just_after) == :eq
+
+    assert TzExtra.clock_shift(dt_just_before, dt_just_after) == :forward
+
+    assert_raise RuntimeError, fn ->
+      assert TzExtra.clock_shift(dt_just_after, dt_just_before) == :backward
+    end
   end
 
   test "time_zone_id_exists?/1" do

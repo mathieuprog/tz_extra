@@ -237,14 +237,15 @@ defmodule TzExtra.Compiler do
           Enum.map(start_unix_time..end_unix_time//step_in_seconds, &DateTime.from_unix!(&1))
         end
 
-        def advances_clock?(time_zone_id) when time_zone_id != nil do
+        def shifts_clock?(time_zone_id) when time_zone_id != nil do
           case Tz.PeriodsProvider.periods(time_zone_id) do
             {:error, :time_zone_not_found} ->
               raise "invalid time zone #{time_zone_id}"
 
             {:ok, [{utc_secs, _, _, nil} | _]} ->
               hardcoded_dst_future_periods? =
-                DateTime.from_gregorian_seconds(utc_secs).year > Tz.PeriodsProvider.compiled_at().year + 20
+                DateTime.from_gregorian_seconds(utc_secs).year >
+                  Tz.PeriodsProvider.compiled_at().year + 20
 
               hardcoded_dst_future_periods?
 
@@ -258,6 +259,21 @@ defmodule TzExtra.Compiler do
 
           DateTime.from_gregorian_seconds(from)
           |> DateTime.shift_zone!(datetime.time_zone, Tz.TimeZoneDatabase)
+        end
+
+        def clock_shift(datetime1, datetime2) do
+          if DateTime.compare(datetime1, datetime2) == :gt do
+            raise "first datetime must be earlier than or equal to second datetime"
+          end
+
+          offset1 = datetime1.utc_offset + datetime1.std_offset
+          offset2 = datetime2.utc_offset + datetime2.std_offset
+
+          cond do
+            offset1 < offset2 -> :forward
+            offset1 > offset2 -> :backward
+            offset1 == offset2 -> :no_shift
+          end
         end
       end,
       for %{code: country_code} <- countries do
