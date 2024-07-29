@@ -62,6 +62,14 @@ defmodule TzExtraTest do
     assert TzExtra.iana_version() == Tz.iana_version()
   end
 
+  test "advances_clock?/1" do
+    assert TzExtra.advances_clock?("Europe/Brussels")
+    assert TzExtra.advances_clock?("Africa/Casablanca")
+
+    refute TzExtra.advances_clock?("Asia/Manila")
+    refute TzExtra.advances_clock?("Asia/Tokyo")
+  end
+
   test "time_zone_id_exists?/1" do
     assert TzExtra.time_zone_id_exists?("Europe/Brussels")
     assert TzExtra.time_zone_id_exists?("Europe/Amsterdam")

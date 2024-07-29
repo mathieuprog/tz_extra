@@ -236,6 +236,22 @@ defmodule TzExtra.Compiler do
 
           Enum.map(start_unix_time..end_unix_time//step_in_seconds, &DateTime.from_unix!(&1))
         end
+
+        def advances_clock?(time_zone_id) when time_zone_id != nil do
+          case Tz.PeriodsProvider.periods(time_zone_id) do
+            {:error, :time_zone_not_found} ->
+              raise "invalid time zone #{time_zone_id}"
+
+            {:ok, [{utc_secs, _, _, nil} | _]} ->
+              hardcoded_dst_future_periods? =
+                DateTime.from_gregorian_seconds(utc_secs).year > Tz.PeriodsProvider.compiled_at().year + 20
+
+              hardcoded_dst_future_periods?
+
+            {:ok, [{_, _, _, _} | _]} ->
+              true
+          end
+        end
       end,
       for %{code: country_code} <- countries do
         {:ok, time_zones_for_country} =
