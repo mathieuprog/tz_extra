@@ -107,6 +107,20 @@ defmodule TzExtraTest do
     refute TzExtra.time_zone_id_exists?("Asia/Amsterdam")
   end
 
+  test "utc_offset_id/2" do
+    {:ok, utc1} =
+      DateTime.new(~D[2024-12-01], ~T[10:00:00], "Europe/Brussels", Tz.TimeZoneDatabase)
+
+    assert TzExtra.utc_offset_id(utc1) == "UTC+01:00"
+    assert TzExtra.utc_offset_id(utc1, :pretty) == "UTC+1"
+
+    {:ok, utc2} =
+      DateTime.new(~D[2024-08-01], ~T[10:00:00], "Europe/Brussels", Tz.TimeZoneDatabase)
+
+    assert TzExtra.utc_offset_id(utc2) == "UTC+02:00"
+    assert TzExtra.utc_offset_id(utc2, :pretty) == "UTC+2"
+  end
+
   test "utc_datetime_range/3" do
     range =
       TzExtra.utc_datetime_range(~U[2024-07-27 13:00:00Z], ~U[2024-07-27 17:00:00Z], 30 * 60)

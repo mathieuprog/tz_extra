@@ -254,6 +254,11 @@ defmodule TzExtra.Compiler do
           end
         end
 
+        def utc_offset_id(%DateTime{} = datetime, mode \\ :standard)
+            when mode in [:standard, :pretty] do
+          "UTC" <> offset_to_string(datetime.utc_offset + datetime.std_offset, mode)
+        end
+
         def next_period_start_in_year_span(%DateTime{} = datetime) do
           {from, _, _, _} = Tz.PeriodsProvider.next_period(datetime)
 
