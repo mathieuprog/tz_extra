@@ -259,11 +259,20 @@ defmodule TzExtra.Compiler do
           "UTC" <> offset_to_string(datetime.utc_offset + datetime.std_offset, mode)
         end
 
-        def next_period_start_in_year_span(%DateTime{} = datetime) do
-          {from, _, _, _} = Tz.PeriodsProvider.next_period(datetime)
+        def next_clock_shift_in_year_span(%DateTime{} = datetime) do
+          case Tz.PeriodsProvider.next_period(datetime) do
+            {from, _, _, _} ->
+              first_datetime_in_next_period =
+                DateTime.from_gregorian_seconds(from)
+                |> DateTime.shift_zone!(datetime.time_zone, Tz.TimeZoneDatabase)
 
-          DateTime.from_gregorian_seconds(from)
-          |> DateTime.shift_zone!(datetime.time_zone, Tz.TimeZoneDatabase)
+              clock_shift = clock_shift(datetime, first_datetime_in_next_period)
+
+              {clock_shift, first_datetime_in_next_period}
+
+            nil ->
+              :no_shift
+          end
         end
 
         def clock_shift(datetime1, datetime2) do

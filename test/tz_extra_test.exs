@@ -70,14 +70,12 @@ defmodule TzExtraTest do
     refute TzExtra.shifts_clock?("Asia/Tokyo")
   end
 
-  test "next_period_start_in_year_span/1 and clock_shift/2" do
+  test "next_clock_shift_in_year_span/1 and clock_shift/2" do
     {:ambiguous, first_dt, second_dt} =
       DateTime.new(~D[2018-10-28], ~T[02:00:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
 
-    dt =
-      TzExtra.next_period_start_in_year_span(
-        DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase)
-      )
+    {:backward, dt} =
+      TzExtra.next_clock_shift_in_year_span(DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase))
 
     assert DateTime.compare(dt, second_dt) == :eq
 
@@ -87,8 +85,8 @@ defmodule TzExtraTest do
     {:gap, dt_just_before, dt_just_after} =
       DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
 
-    dt =
-      TzExtra.next_period_start_in_year_span(
+    {:forward, dt} =
+      TzExtra.next_clock_shift_in_year_span(
         DateTime.add(dt_just_before, -1, :day, Tz.TimeZoneDatabase)
       )
 
@@ -99,6 +97,13 @@ defmodule TzExtraTest do
     assert_raise RuntimeError, fn ->
       assert TzExtra.clock_shift(dt_just_after, dt_just_before) == :backward
     end
+
+    {:ok, dt} = DateTime.new(~D[2018-10-28], ~T[02:00:00], "Asia/Manila", Tz.TimeZoneDatabase)
+
+    assert :no_shift ==
+             TzExtra.next_clock_shift_in_year_span(
+               DateTime.add(dt, -1, :day, Tz.TimeZoneDatabase)
+             )
   end
 
   test "time_zone_id_exists?/1" do
