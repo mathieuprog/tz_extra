@@ -252,6 +252,13 @@ defmodule TzExtra.Compiler do
               true
           end
         end
+
+        def next_period_start_in_year_span(%DateTime{} = datetime) do
+          {from, _, _, _} = Tz.PeriodsProvider.next_period(datetime)
+
+          DateTime.from_gregorian_seconds(from)
+          |> DateTime.shift_zone!(datetime.time_zone, Tz.TimeZoneDatabase)
+        end
       end,
       for %{code: country_code} <- countries do
         {:ok, time_zones_for_country} =

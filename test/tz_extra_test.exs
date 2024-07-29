@@ -70,6 +70,16 @@ defmodule TzExtraTest do
     refute TzExtra.advances_clock?("Asia/Tokyo")
   end
 
+  test "next_period_start_in_year_span/1" do
+    {:ambiguous, first_dt, second_dt} = DateTime.new(~D[2018-10-28], ~T[02:00:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+    dt = TzExtra.next_period_start_in_year_span(DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase))
+    assert DateTime.compare(dt, second_dt) == :eq
+
+    {:gap, dt_just_before, dt_just_after} = DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
+    dt = TzExtra.next_period_start_in_year_span(DateTime.add(dt_just_before, -1, :day, Tz.TimeZoneDatabase))
+    assert DateTime.compare(dt, dt_just_after) == :eq
+  end
+
   test "time_zone_id_exists?/1" do
     assert TzExtra.time_zone_id_exists?("Europe/Brussels")
     assert TzExtra.time_zone_id_exists?("Europe/Amsterdam")
