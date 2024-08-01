@@ -130,6 +130,8 @@ defmodule TzExtra.Compiler do
           unquote(Tz.iana_version())
         end
 
+        def utc_time_zone_id(), do: "Etc/UTC"
+
         def canonical_time_zone_id(time_zone_id) do
           unquote(Macro.escape(link_canonical_map))[time_zone_id] ||
             raise "time zone identifier \"#{time_zone_id}\" not found"
@@ -265,6 +267,8 @@ defmodule TzExtra.Compiler do
               first_datetime_in_next_period =
                 DateTime.from_gregorian_seconds(from)
                 |> DateTime.shift_zone!(datetime.time_zone, Tz.TimeZoneDatabase)
+
+              # TODO: in a year span only
 
               clock_shift = clock_shift(datetime, first_datetime_in_next_period)
 
