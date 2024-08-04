@@ -41,6 +41,7 @@ defmodule TzExtra.Compiler do
       IanaFileParser.time_zones_with_country(countries)
       |> add_time_zone_links(get_time_zone_links_for_canonical_fun)
       |> add_offset_data()
+      |> add_id()
       |> localize_country_name()
       |> Enum.sort_by(
         &{&1.country && normalize_string(&1.country.name), &1.utc_to_std_offset, &1.time_zone_id}
@@ -406,6 +407,10 @@ defmodule TzExtra.Compiler do
       |> Map.put(:time_zone_abbr, time_zone_abbr)
       |> Map.put(:dst_time_zone_abbr, dst_time_zone_abbr)
     end)
+  end
+
+  defp add_id(countries_time_zones) do
+    Enum.map(countries_time_zones, &Map.put(&1, :id, &1.time_zone_id <> "_" <> &1.country.code))
   end
 
   defp add_time_zone_links(countries_time_zones, get_time_zone_links_for_canonical_fun) do
