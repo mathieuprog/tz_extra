@@ -1,7 +1,7 @@
 defmodule TzExtra.MixProject do
   use Mix.Project
 
-  @version "0.36.0"
+  @version "0.37.0"
 
   def project do
     [
