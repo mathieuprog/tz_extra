@@ -50,11 +50,11 @@ defmodule TzExtraTest do
   end
 
   test "canonical_time_zone_id/1" do
-    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id("Asia/Phnom_Penh")
-    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id("Asia/Bangkok")
+    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id!("Asia/Phnom_Penh")
+    assert "Asia/Bangkok" == TzExtra.canonical_time_zone_id!("Asia/Bangkok")
 
     assert_raise RuntimeError, "time zone identifier \"foo\" not found", fn ->
-      TzExtra.canonical_time_zone_id("foo")
+      TzExtra.canonical_time_zone_id!("foo")
     end
   end
 

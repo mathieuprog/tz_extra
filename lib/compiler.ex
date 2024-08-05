@@ -146,8 +146,21 @@ defmodule TzExtra.Compiler do
         def utc_time_zone_id(), do: "Etc/UTC"
 
         def canonical_time_zone_id(time_zone_id) do
-          unquote(Macro.escape(link_canonical_map))[time_zone_id] ||
-            raise "time zone identifier \"#{time_zone_id}\" not found"
+          if time_zone_id = unquote(Macro.escape(link_canonical_map))[time_zone_id] do
+            {:ok, time_zone_id}
+          else
+            {:error, :time_zone_not_found}
+          end
+        end
+
+        def canonical_time_zone_id!(time_zone_id) do
+          case canonical_time_zone_id(time_zone_id) do
+            {:ok, time_zone_id} ->
+              time_zone_id
+
+            {:error, :time_zone_not_found} ->
+              raise "time zone identifier \"#{time_zone_id}\" not found"
+          end
         end
 
         def civil_time_zone_ids(opts \\ []) do
@@ -326,18 +339,22 @@ defmodule TzExtra.Compiler do
 
         quote do
           def country_time_zone(unquote(country_code), time_zone_id) do
-            canonical_time_zone = canonical_time_zone_id(time_zone_id)
+            case canonical_time_zone_id(time_zone_id) do
+              {:error, _} = error ->
+                error
 
-            country_time_zone =
-              Enum.find(
-                unquote(Macro.escape(time_zones_for_country)),
-                &(&1.time_zone_id == canonical_time_zone)
-              )
+              {:ok, canonical_time_zone_id} ->
+                country_time_zone =
+                  Enum.find(
+                    unquote(Macro.escape(time_zones_for_country)),
+                    &(&1.time_zone_id == canonical_time_zone_id)
+                  )
 
-            if country_time_zone do
-              {:ok, country_time_zone}
-            else
-              {:error, :time_zone_not_found_for_country}
+                if country_time_zone do
+                  {:ok, country_time_zone}
+                else
+                  {:error, :time_zone_not_found_for_country}
+                end
             end
           end
 

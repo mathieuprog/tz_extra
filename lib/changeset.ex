@@ -45,6 +45,40 @@ if Code.ensure_loaded?(Ecto.Changeset) do
       end)
     end
 
+    def validate_country_time_zone(%Ecto.Changeset{} = changeset, fields, opts \\ []) do
+      field_names = Keyword.keys(fields)
+      field_types = Keyword.values(fields)
+
+      unless [:country_code, :time_zone_id] -- field_types == [] do
+        raise "second argument must be a keyword list where the values are :country_code and :time_zone_id"
+      end
+
+      ChangesetHelpers.validate_changes(changeset, field_names, :country_time_zone, fn fields ->
+        [{field_name_1, field_value_1}, {_field_name_2, field_value_2}] = fields
+
+        {country_code, time_zone_id} =
+          cond do
+            Keyword.fetch!(fields, field_name_1) == :country_code ->
+              {field_value_1, field_value_2}
+
+            true ->
+              {field_value_2, field_value_1}
+          end
+
+        case TzExtra.country_time_zone(country_code, time_zone_id) do
+          {:ok, _} ->
+            []
+
+          {:error, _} ->
+            [
+              {field_name_1,
+               {message(opts, "is not a valid country time zone"),
+                [validation: :country_time_zone]}}
+            ]
+        end
+      end)
+    end
+
     defp message(opts, key \\ :message, default) do
       Keyword.get(opts, key, default)
     end
