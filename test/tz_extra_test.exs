@@ -112,6 +112,11 @@ defmodule TzExtraTest do
     refute TzExtra.time_zone_id_exists?("Asia/Amsterdam")
   end
 
+  test "country_code_exists?/1" do
+    assert TzExtra.country_code_exists?("BE")
+    refute TzExtra.country_code_exists?("XX")
+  end
+
   test "utc_offset_id/2" do
     {:ok, utc1} =
       DateTime.new(~D[2024-12-01], ~T[10:00:00], "Europe/Brussels", Tz.TimeZoneDatabase)

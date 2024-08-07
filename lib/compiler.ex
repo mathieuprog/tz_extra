@@ -188,6 +188,11 @@ defmodule TzExtra.Compiler do
           |> Enum.any?(&(&1 == time_zone_id))
         end
 
+        def country_code_exists?(country_code) do
+          countries()
+          |> Enum.any?(&(&1.code == country_code))
+        end
+
         def round_datetime(%DateTime{} = datetime, step_in_seconds, mode)
             when mode in [:floor, :ceil] do
           utc_datetime = DateTime.to_unix(datetime, :second)
