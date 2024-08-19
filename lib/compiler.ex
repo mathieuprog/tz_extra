@@ -7,7 +7,7 @@ defmodule TzExtra.Compiler do
   alias TzExtra.IanaFileParser
 
   def compile() do
-    countries = IanaFileParser.countries()
+    countries = IanaFileParser.countries() |> localize_country_name()
     time_zones = IanaFileParser.time_zones()
 
     canonical_time_zones =
@@ -42,7 +42,6 @@ defmodule TzExtra.Compiler do
       |> add_time_zone_links(get_time_zone_links_for_canonical_fun)
       |> add_offset_data()
       |> add_id()
-      |> localize_country_name()
       |> Enum.sort_by(
         &{&1.country && normalize_string(&1.country.name), &1.utc_to_std_offset, &1.time_zone_id}
       )
@@ -468,10 +467,10 @@ defmodule TzExtra.Compiler do
     end)
   end
 
-  defp localize_country_name(countries_time_zones) do
-    Enum.map(countries_time_zones, fn %{country: country} = time_zone ->
+  defp localize_country_name(countries) do
+    Enum.map(countries, fn country ->
       local_names = local_country_names(country.code)
-      %{time_zone | country: Map.put(country, :local_names, local_names)}
+      Map.put(country, :local_names, local_names)
     end)
   end
 
