@@ -470,7 +470,13 @@ defmodule TzExtra.Compiler do
   defp localize_country_name(countries) do
     Enum.map(countries, fn country ->
       local_names = local_country_names(country.code)
-      Map.put(country, :local_names, local_names)
+
+      search_text = country.code <> country.name <> Enum.join(local_names)
+      search_text = String.downcase(search_text)
+
+      country
+      |> Map.put(:local_names, local_names)
+      |> Map.put(:search_text, search_text)
     end)
   end
 
