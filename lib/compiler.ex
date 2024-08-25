@@ -454,7 +454,38 @@ defmodule TzExtra.Compiler do
   end
 
   defp add_id(countries_time_zones) do
-    Enum.map(countries_time_zones, &Map.put(&1, :id, &1.time_zone_id <> "_" <> &1.country.code))
+    countries_time_zones
+    |> Enum.map(fn country_time_zone ->
+      id = country_time_zone.time_zone_id <> "_" <> country_time_zone.country.code
+
+      slugified_country_name = slugify(country_time_zone.country.name)
+
+      slugify_city_or_region = fn time_zone_id ->
+        time_zone_id
+        |> String.split("/")
+        |> List.last()
+        |> slugify()
+      end
+
+      slugified_time_zone_id = slugify_city_or_region.(country_time_zone.time_zone_id)
+
+      slug = slugified_country_name <> "-" <> slugified_time_zone_id
+
+      country_has_multiple_canonical_time_zones? =
+        Enum.count(countries_time_zones, &(&1.country.code == country_time_zone.country.code)) > 1
+
+      short_slug =
+        if country_has_multiple_canonical_time_zones? do
+          slug
+        else
+          slugified_country_name
+        end
+
+      country_time_zone
+      |> Map.put(:id, id)
+      |> Map.put(:short_slug, short_slug)
+      |> Map.put(:slug, slug)
+    end)
   end
 
   defp add_time_zone_links(countries_time_zones, get_time_zone_links_for_canonical_fun) do
@@ -477,7 +508,21 @@ defmodule TzExtra.Compiler do
       country
       |> Map.put(:local_names, local_names)
       |> Map.put(:search_text, search_text)
+      |> Map.put(:slug, slugify(country.name))
     end)
+  end
+
+  defp slugify(string) do
+    string
+    |> String.normalize(:nfd)
+    |> String.downcase()
+    |> String.replace("_", "-")
+    |> String.replace("'", "-")
+    |> String.replace("&", "-and-")
+    |> String.replace(~r/[^a-z\s-]/u, "")
+    |> String.replace(~r/\s+/, "-")
+    |> String.replace(~r/-+/, "-")
+    |> String.trim("-")
   end
 
   defp local_country_names(country_code) do
