@@ -3,13 +3,10 @@
 `tz_extra` provides a few utilities to work with time zones. It uses [`Tz`](https://github.com/mathieuprog/tz) under the hood, which brings time zone support for Elixir.
 
 * [`TzExtra.countries_time_zones/0`](#tzextracountries_time_zones0): returns a list of time zone data by country
-* [`TzExtra.CountryTimeZone.for_country_code/1`](#tzextracountrytimezonefor_country_code1): returns a list of time zone data for a given country
-* [`TzExtra.CountryTimeZone.for_time_zone/1`](#tzextracountrytimezonefor_time_zone1): returns a list of time zone data for a time zone
 * `TzExtra.country_time_zone/2`
 * `TzExtra.country_time_zone!/2`
 * [`TzExtra.time_zone_ids/1`](#tzextratime_zone_ids1): returns a list of time zone identifiers
 * `TzExtra.time_zone_id_exists?/1`
-* `TzExtra.humanize_time_zone_id/1`
 * [`TzExtra.civil_time_zone_ids/1`](#tzextracivil_time_zone_ids1): returns a list of time zone identifiers that are tied to a country
 * [`TzExtra.countries/0`](#tzextracountries0): returns a list of ISO country codes with their English name
 * [`TzExtra.canonical_time_zone_id/1`](#tzextracanonical_time_zone_id1): returns the canonical time zone identifier for the given time zone identifier
