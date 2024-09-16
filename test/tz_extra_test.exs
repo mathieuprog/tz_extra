@@ -74,7 +74,7 @@ defmodule TzExtraTest do
     {:ambiguous, first_dt, second_dt} =
       DateTime.new(~D[2018-10-28], ~T[02:00:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
 
-    {:backward, dt} =
+    {:backward, dt, -60} =
       TzExtra.next_clock_shift_in_year_span(DateTime.add(first_dt, -1, :day, Tz.TimeZoneDatabase))
 
     assert DateTime.compare(dt, second_dt) == :eq
@@ -85,7 +85,7 @@ defmodule TzExtraTest do
     {:gap, dt_just_before, dt_just_after} =
       DateTime.new(~D[2019-03-31], ~T[02:30:00], "Europe/Copenhagen", Tz.TimeZoneDatabase)
 
-    {:forward, dt} =
+    {:forward, dt, 60} =
       TzExtra.next_clock_shift_in_year_span(
         DateTime.add(dt_just_before, -1, :day, Tz.TimeZoneDatabase)
       )

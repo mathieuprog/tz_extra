@@ -326,7 +326,18 @@ defmodule TzExtra.Compiler do
                 :no_shift
               else
                 clock_shift = clock_shift(datetime, first_datetime_in_next_period)
-                {clock_shift, first_datetime_in_next_period}
+
+                offset = datetime.utc_offset + datetime.std_offset
+
+                next_offset =
+                  first_datetime_in_next_period.utc_offset +
+                    first_datetime_in_next_period.std_offset
+
+                {
+                  clock_shift,
+                  first_datetime_in_next_period,
+                  div(next_offset - offset, 60)
+                }
               end
 
             nil ->
