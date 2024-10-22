@@ -1,4 +1,4 @@
-if Code.ensure_loaded?(Ecto.Changeset) do
+if Code.ensure_loaded?(Ecto.Changeset) and Code.ensure_loaded?(ChangesetHelpers) do
   defmodule TzExtra.Changeset do
     require TzExtra.Compiler
 

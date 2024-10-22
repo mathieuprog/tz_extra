@@ -31,7 +31,7 @@ defmodule TzExtra.MixProject do
   defp deps do
     [
       {:tz, "~> 0.27"},
-      {:changeset_helpers, "~> 0.23"},
+      {:changeset_helpers, "~> 0.23", optional: true},
       {:ecto, "~> 3.11", optional: true},
       {:jason, "~> 1.4", only: :dev},
       {:ex_doc, "~> 0.34", only: :dev}
